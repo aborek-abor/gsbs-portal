@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ghanaian Society for Biomedical Scientists</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root{
+    --paper:#F3F5EF;
+    --paper-raised:#FFFFFF;
+    --ink:#14201C;
+    --ink-soft:#4B5A53;
+    --hairline:#D6D9CD;
+    --green:#0B5D3B;
+    --green-deep:#083F28;
+    --gold:#B8860B;
+    --gold-soft:#F3E3B8;
+    --clay:#A63A24;
+    --clay-soft:#F5DCD4;
+    --serif:'Source Serif 4', Georgia, serif;
+    --sans:'Inter', system-ui, sans-serif;
+    --mono:'IBM Plex Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--sans); line-height:1.5; font-size:15px;
+  }
+  a{color:var(--green); text-decoration:none;}
+  button{font-family:var(--sans); cursor:pointer;}
+  :focus-visible{outline:2px solid var(--green); outline-offset:2px;}
+
+  header.site{
+    background:var(--green-deep); color:#fff; padding:0 24px;
+    display:flex; align-items:center; justify-content:space-between;
+    position:sticky; top:0; z-index:10; border-bottom:3px solid var(--gold);
+  }
+  .brand{display:flex; align-items:center; gap:10px; padding:14px 0;}
+  .brand-mark{width:36px; height:38px; display:flex; align-items:center; justify-content:center;}
+  .brand-mark img{width:100%; height:100%; object-fit:contain;}
+  .cert .seal{width:46px; height:46px; display:flex; align-items:center; justify-content:center;}
+  .cert .seal img{width:100%; height:100%; object-fit:contain;}
+  .brand-text{font-family:var(--serif); font-weight:600; font-size:17px; letter-spacing:.2px;}
+  .brand-text small{display:block; font-family:var(--sans); font-weight:400; font-size:10px; letter-spacing:1.5px; opacity:.75; text-transform:uppercase;}
+  nav.site{display:flex; gap:4px;}
+  nav.site button{
+    background:none; border:none; color:#e9ece6; padding:10px 14px;
+    font-size:13.5px; font-weight:500; border-bottom:2px solid transparent;
+  }
+  nav.site button:hover{color:#fff;}
+  nav.site button.active{color:#fff; border-bottom-color:var(--gold);}
+
+  main{max-width:1040px; margin:0 auto; padding:40px 24px 100px;}
+  .view{display:none;}
+  .view.active{display:block;}
+
+  .eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--green); margin:0 0 10px;}
+  h1{font-family:var(--serif); font-size:38px; font-weight:600; margin:0 0 14px; line-height:1.15;}
+  h2{font-family:var(--serif); font-size:24px; font-weight:600; margin:0 0 12px;}
+  h3{font-family:var(--serif); font-size:17px; font-weight:600; margin:0 0 8px;}
+  p.lede{font-size:16.5px; color:var(--ink-soft); max-width:620px;}
+
+  .hero{
+    display:grid; grid-template-columns:1.3fr 1fr; gap:40px; align-items:center;
+    padding-bottom:44px; border-bottom:1px solid var(--hairline); margin-bottom:44px;
+  }
+  .hero-panel{
+    background:var(--paper-raised); border:1px solid var(--hairline); padding:26px;
+    position:relative;
+  }
+  .hero-panel::before{
+    content:""; position:absolute; inset:6px; border:1px solid var(--hairline); pointer-events:none;
+  }
+  .hero-panel .stat{display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px dashed var(--hairline); font-size:13.5px;}
+  .hero-panel .stat:last-child{border-bottom:none;}
+  .hero-panel .stat b{font-family:var(--mono); font-size:15px;}
+
+  .cta-row{display:flex; gap:10px; margin-top:22px; flex-wrap:wrap;}
+  .btn{
+    padding:11px 20px; font-size:13.5px; font-weight:600; border-radius:2px; border:1px solid transparent;
+  }
+  .btn-primary{background:var(--green); color:#fff;}
+  .btn-primary:hover{background:var(--green-deep);}
+  .btn-ghost{background:transparent; border-color:var(--ink); color:var(--ink);}
+  .btn-ghost:hover{background:var(--ink); color:#fff;}
+  .btn-block{width:100%;}
+  .btn-sm{padding:7px 12px; font-size:12.5px;}
+
+  .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin:30px 0;}
+  .card{background:var(--paper-raised); border:1px solid var(--hairline); padding:20px;}
+  .card .eyebrow{margin-bottom:6px;}
+
+  form .field{margin-bottom:16px;}
+  label{display:block; font-size:12.5px; font-weight:600; margin-bottom:5px; color:var(--ink-soft);}
+  input,select,textarea{
+    width:100%; padding:10px 12px; border:1px solid var(--hairline); background:#fff;
+    font-family:var(--sans); font-size:14px; color:var(--ink); border-radius:2px;
+  }
+  textarea{min-height:80px; resize:vertical;}
+  .field-row{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .hint{font-size:12px; color:var(--ink-soft); margin-top:4px;}
+
+  .panel{background:var(--paper-raised); border:1px solid var(--hairline); padding:28px; max-width:520px;}
+  .panel.wide{max-width:none;}
+
+  .status-chip{
+    display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:20px;
+    font-size:11.5px; font-weight:600; letter-spacing:.3px; text-transform:uppercase;
+  }
+  .status-active{background:#DCEBE1; color:var(--green-deep);}
+  .status-pending{background:var(--clay-soft); color:var(--clay);}
+  .status-lapsed{background:#E7E4DA; color:var(--ink-soft);}
+
+  .cert{
+    border:2px solid var(--gold); background:#fff; padding:22px; position:relative; margin-top:14px;
+  }
+  .cert::before{content:""; position:absolute; inset:5px; border:1px solid var(--gold-soft);}
+  .cert-top{display:flex; justify-content:space-between; align-items:flex-start; font-family:var(--mono); font-size:11px; color:var(--ink-soft);}
+  .cert h3{font-family:var(--serif); font-size:20px; margin:14px 0 4px;}
+  .cert .name{font-size:15px; font-weight:600; margin-bottom:2px;}
+
+  .verify-result{
+    border:2px solid var(--green); background:#fff; padding:22px; margin-top:20px; position:relative;
+  }
+  .verify-result::before{content:""; position:absolute; inset:5px; border:1px solid #cfe4d6;}
+  .verify-none{border:2px dashed var(--hairline); padding:22px; margin-top:20px; color:var(--ink-soft); text-align:center;}
+
+  table.ledger{width:100%; border-collapse:collapse; font-size:13.5px; margin-top:10px;}
+  table.ledger th{text-align:left; font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.8px; color:var(--ink-soft); border-bottom:1px solid var(--hairline); padding:8px 6px;}
+  table.ledger td{padding:9px 6px; border-bottom:1px solid var(--hairline); vertical-align:top;}
+
+  .timeline{margin-top:8px;}
+  .timeline-item{display:flex; gap:12px; padding:10px 0; border-bottom:1px dashed var(--hairline);}
+  .timeline-item:last-child{border-bottom:none;}
+  .timeline-date{font-family:var(--mono); font-size:11.5px; color:var(--ink-soft); min-width:82px;}
+
+  .banner{padding:10px 14px; border-left:3px solid var(--green); background:#EAF3EC; font-size:13px; margin-bottom:18px;}
+  .banner.warn{border-color:var(--clay); background:var(--clay-soft);}
+
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:26px;}
+  .id-badge{font-family:var(--mono); background:var(--green-deep); color:#fff; padding:3px 8px; font-size:12.5px; border-radius:2px;}
+
+  .join-row{border-bottom:1px solid var(--hairline);}
+  .join-link{
+    display:flex; justify-content:space-between; align-items:center; width:100%;
+    background:none; border:none; text-align:left; padding:16px 4px; font-family:var(--serif);
+    font-size:19px; color:var(--ink); font-weight:600;
+  }
+  .join-link:hover{color:var(--green);}
+  .join-link .arrow{font-family:var(--sans); font-size:13px; color:var(--ink-soft); font-weight:500;}
+  .join-link.open{color:var(--green);}
+  .join-detail-panel{
+    background:var(--paper-raised); border:1px solid var(--hairline); border-top:3px solid var(--green);
+    padding:22px; margin:-1px 0 18px;
+  }
+
+  .doc-body{max-width:760px;}
+  .doc-body h2{font-family:var(--serif); font-size:20px; margin:34px 0 10px; color:var(--green-deep);}
+  .doc-body h3{font-family:var(--sans); font-size:13.5px; font-weight:700; margin:18px 0 6px; color:var(--ink);}
+  .doc-body p{font-size:13.5px; color:var(--ink-soft); margin:0 0 12px;}
+  .doc-body ul{font-size:13.5px; color:var(--ink-soft); margin:0 0 12px; padding-left:20px;}
+  .doc-title{font-family:var(--serif); font-size:24px; font-weight:600; margin:6px 0 4px; color:var(--ink);}
+  .doc-sub{font-size:13px; color:var(--ink-soft); margin-bottom:24px;}
+
+  footer{border-top:1px solid var(--hairline); margin-top:60px; padding:24px; text-align:center; font-size:12px; color:var(--ink-soft);}
+  .disclaimer{max-width:1040px; margin:0 auto 0; padding:0 24px 20px; font-size:11.5px; color:var(--ink-soft);}
+
+  @media (max-width:760px){
+    .hero{grid-template-columns:1fr;}
+    .grid-3{grid-template-columns:1fr;}
+    .two-col{grid-template-columns:1fr;}
+    .field-row{grid-template-columns:1fr;}
+    nav.site{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="brand">
+    <div class="brand-mark"><img id="brandLogoImg" alt="GSBS logo"></div>
+    <div class="brand-text">Ghanaian Society for Biomedical Scientists<small>National Register &amp; Member Portal</small></div>
+  </div>
+  <nav class="site" id="mainNav">
+    <button data-view="home" class="active">Home</button>
+    <button data-view="about">About</button>
+    <button data-view="join">Join</button>
+    <button data-view="governance">Governance</button>
+    <button data-view="verify">Verify a member</button>
+    <button data-view="apply">Apply</button>
+    <button data-view="login">Member login</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- HOME -->
+  <section class="view active" id="view-home">
+    <div class="hero">
+      <div>
+        <p class="eyebrow">Est. 2026 &middot; University of Cape Coast</p>
+        <h1>The professional home for Clinical Biomedical Scientists in Ghana.</h1>
+        <p class="lede">GSBS registers, credentials, and represents Biomedical Sciences graduates and researchers nationally, and maintains the national register the public can use to verify who holds a current credential.</p>
+        <div class="cta-row">
+          <button class="btn btn-primary" data-view="apply">Apply for membership</button>
+          <button class="btn btn-ghost" data-view="verify">Verify a member</button>
+        </div>
+      </div>
+      <div class="hero-panel">
+        <div class="eyebrow" style="margin-bottom:14px;">National register, live</div>
+        <div class="stat"><span>Registered members</span><b id="statMembers">0</b></div>
+        <div class="stat"><span>Active credentials</span><b id="statCreds">0</b></div>
+        <div class="stat"><span>Applications in review</span><b id="statPending">0</b></div>
+        <div class="stat"><span>Credential tiers</span><b>CCBS &middot; Specialist &middot; Clinical Scientist &middot; FGSBS</b></div>
+      </div>
+    </div>
+
+    <h2>How the register works</h2>
+    <ul id="howList" style="list-style:none; padding:0; margin:16px 0; border-top:1px solid var(--hairline);"></ul>
+  </section>
+
+  <!-- GOVERNANCE -->
+  <section class="view" id="view-governance">
+    <p class="eyebrow">Governing documents</p>
+    <h1 style="font-size:28px;">Governance</h1>
+    <p class="lede">Ghanaian Society for Biomedical Scientists is governed by the documents below, adopted by the founding members.</p>
+
+    <ul style="list-style:none; padding:0; margin:26px 0; border-top:1px solid var(--hairline);">
+      <li class="join-row"><div style="display:flex; justify-content:space-between; align-items:center; padding:16px 4px;">
+        <div><h3 style="margin-bottom:2px;">Constitution</h3><p class="hint" style="margin:0;">Name, objectives, membership, governance structure, elections, finance, and amendment procedure.</p></div>
+        <a class="btn btn-ghost btn-sm" href="#" onclick="showDocument('constitution'); return false;">View document</a>
+      </div></li>
+      <li class="join-row"><div style="display:flex; justify-content:space-between; align-items:center; padding:16px 4px;">
+        <div><h3 style="margin-bottom:2px;">Bylaws</h3><p class="hint" style="margin:0;">Membership admission, online elections, term of office, and the GSBS Board of Certification (CCBS, Specialist, GSBS Clinical Scientist, FGSBS).</p></div>
+        <a class="btn btn-ghost btn-sm" href="#" onclick="showDocument('bylaws'); return false;">View document</a>
+      </div></li>
+      <li class="join-row"><div style="display:flex; justify-content:space-between; align-items:center; padding:16px 4px;">
+        <div><h3 style="margin-bottom:2px;">Title Position Statement</h3><p class="hint" style="margin:0;">GSBS's position on the use of the title "Biomedical Scientist" / "Clinical Biomedical Scientist."</p></div>
+        <a class="btn btn-ghost btn-sm" href="#" onclick="showDocument('title'); return false;">View document</a>
+      </div></li>
+      <li class="join-row"><div style="display:flex; justify-content:space-between; align-items:center; padding:16px 4px;">
+        <div><h3 style="margin-bottom:2px;">Practicum Comparison Exhibit</h3><p class="hint" style="margin:0;">Supporting evidence for the Society's licensure engagement with AHPC.</p></div>
+        <a class="btn btn-ghost btn-sm" href="#" onclick="alert('Internal document, not for public posting until finalized.'); return false;">Restricted</a>
+      </div></li>
+    </ul>
+  </section>
+
+  <!-- DOCUMENT VIEWER -->
+  <section class="view" id="view-docviewer">
+    <a href="#" onclick="setView('governance'); return false;" class="hint">&larr; Back to Governance</a>
+    <div id="docviewerContent" style="margin-top:16px;"></div>
+  </section>
+
+  <!-- VERIFY -->
+  <section class="view" id="view-verify">
+    <p class="eyebrow">Member register</p>
+    <h1 style="font-size:28px;">Verify a member</h1>
+    <p class="lede">Search the national register by name. Available to registered members after login.</p>
+    <div id="verifyGate"></div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="view" id="view-about">
+    <p class="eyebrow">Est. 2026 &middot; University of Cape Coast</p>
+    <h1 style="font-size:28px;">About Ghanaian Society for Biomedical Scientists</h1>
+    <p class="lede">A national professional and scientific organization representing Clinical Biomedical Scientists, Biomedical Scientists, Biomedical Researchers, and Biomedical Science students in Ghana.</p>
+
+    <div class="two-col" style="margin-top:30px;">
+      <div>
+        <h2 style="font-size:18px;">Vision</h2>
+        <p style="color:var(--ink-soft); font-size:13.5px;">To be the recognized national voice and professional home of Clinical Biomedical Scientists and the wider biomedical science community in Ghana.</p>
+        <h2 style="font-size:18px; margin-top:22px;">Mission</h2>
+        <p style="color:var(--ink-soft); font-size:13.5px;">To advance biomedical science education, research, mentorship, and career development in Ghana, connect students and professionals across universities, hospitals, and industry, and support the growth of the profession, including a clear, nationally recognized professional identity for Clinical Biomedical Scientists.</p>
+      </div>
+      <div>
+        <h2 style="font-size:18px;">Why GSBS exists</h2>
+        <p style="color:var(--ink-soft); font-size:13.5px;">Biomedical Sciences students and graduates in Ghana have not had a dedicated national professional home, one that supports student chapters, mentorship, research collaboration, and career development the way established professions do. GSBS was founded to build that home first: a community, a research network, and a career pathway for the profession, with professional recognition as one part of that broader growth, not the whole of it.</p>
+      </div>
+    </div>
+
+    <h2 style="font-size:18px; margin-top:34px;">How the Society is organized</h2>
+    <ul id="aboutList" style="list-style:none; padding:0; margin:16px 0; border-top:1px solid var(--hairline);"></ul>
+  </section>
+
+  <!-- JOIN -->
+  <section class="view" id="view-join">
+    <p class="eyebrow">Membership</p>
+    <h1 style="font-size:28px;">Find your membership type</h1>
+    <p class="lede">GSBS has five membership classes, set out in Article III of the Constitution. Select one to see its requirements and apply.</p>
+
+    <ul id="joinList" style="list-style:none; padding:0; margin:26px 0; border-top:1px solid var(--hairline);"></ul>
+    <div id="joinDetail"></div>
+  </section>
+
+  <!-- APPLY -->
+  <section class="view" id="view-apply">
+    <p class="eyebrow">Membership application</p>
+    <h1 style="font-size:28px;">Apply for membership</h1>
+    <p class="lede">Full Members: BSc Biomedical Sciences graduates. Student Members: currently enrolled, with practicum evidence where applicable. Associate Members: related biomedical fields.</p>
+
+    <form class="panel wide" id="applyForm" onsubmit="submitApplication(event)">
+      <div class="two-col">
+        <div>
+          <div class="field">
+            <label>Full name</label>
+            <input required id="apFullName">
+          </div>
+          <div class="field">
+            <label>Email</label>
+            <input required type="email" id="apEmail">
+          </div>
+          <div class="field">
+            <label>Phone</label>
+            <input id="apPhone">
+          </div>
+        </div>
+        <div>
+          <div class="field">
+            <label>Membership type</label>
+            <select id="apType">
+              <option value="Full">Full Member (graduated)</option>
+              <option value="Student">Student Member (currently enrolled)</option>
+              <option value="Associate">Associate Member</option>
+              <option value="International">International / Diaspora Member</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Institution</label>
+            <input id="apInstitution" value="University of Cape Coast">
+          </div>
+          <div class="field">
+            <label>Year of graduation / current year of study</label>
+            <input id="apYear" placeholder="e.g. 2024, or Year 3">
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Supporting documents (describe what you're attaching, transcript, department recommendation letter, certificate, or practicum evidence)</label>
+        <textarea id="apDocs" placeholder="e.g. Official transcript, HoD recommendation letter, degree certificate"></textarea>
+      </div>
+      <div class="field">
+        <label>Upload files (PDF or image, multiple allowed)</label>
+        <input type="file" id="apFiles" multiple accept=".pdf,.jpg,.jpeg,.png,image/*,application/pdf">
+        <p class="hint">Accepted: PDF, JPG, PNG. This preview records the file names with your application for the Admissions Committee's reference; it does not permanently store the file contents, a production version would attach the documents themselves.</p>
+      </div>
+      <button class="btn btn-primary" type="submit">Submit application</button>
+    </form>
+    <div id="applyOutput"></div>
+  </section>
+
+  <!-- LOGIN -->
+  <section class="view" id="view-login">
+    <p class="eyebrow">Member portal</p>
+    <h1 style="font-size:28px;">Log in</h1>
+    <p class="lede">Enter the Member ID and passcode you received when your application was submitted or approved.</p>
+    <div class="panel">
+      <div class="field">
+        <label>Member ID</label>
+        <input id="loginId" placeholder="GSBS-000123">
+      </div>
+      <div class="field">
+        <label>Passcode</label>
+        <input id="loginPass" type="password" placeholder="6-digit passcode">
+      </div>
+      <button class="btn btn-primary btn-block" onclick="doLogin()">Log in</button>
+      <div id="loginError"></div>
+    </div>
+  </section>
+
+  <!-- PORTAL (personalized) -->
+  <section class="view" id="view-portal">
+    <div id="portalContent"></div>
+  </section>
+
+  <!-- ADMIN (demo) -->
+  <section class="view" id="view-admin">
+    <p class="eyebrow">Internal &middot; demo only</p>
+    <h1 style="font-size:28px;">Admissions queue</h1>
+    <p class="lede">In production this maps to the Membership Admissions Committee's role under the Bylaws. Gated here only for demonstration, not secure.</p>
+    <div class="panel" id="adminGate">
+      <div id="adminGateBody"></div>
+    </div>
+    <div id="adminContent" style="display:none;"></div>
+  </section>
+
+</main>
+
+<footer>Ghanaian Society for Biomedical Scientists</footer>
+
+<script>
+const LOGO_DATA_URI = "data:image/png;base64,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";
+document.getElementById("brandLogoImg").src = LOGO_DATA_URI;
+
+const API_BASE = ''; // same-origin: server serves both the API and this page
+let memberToken = localStorage.getItem('gsbs_member_token');
+let adminToken = localStorage.getItem('gsbs_admin_token');
+
+async function api(path, opts = {}) {
+  const headers = Object.assign({}, opts.headers || {});
+  const token = path.startsWith('/api/admin') ? adminToken : memberToken;
+  if (token && !opts.noAuth) headers['Authorization'] = 'Bearer ' + token;
+  if (opts.body && !(opts.body instanceof FormData)) {
+    headers['Content-Type'] = 'application/json';
+    opts.body = JSON.stringify(opts.body);
+  }
+  const res = await fetch(API_BASE + path, Object.assign({}, opts, { headers }));
+  let data = {};
+  try { data = await res.json(); } catch (e) {}
+  if (!res.ok) throw new Error(data.error || 'Request failed.');
+  return data;
+}
+
+function checkDirectRoute(){
+  if(window.location.hash === '#admin'){ setView('admin'); }
+}
+window.addEventListener('hashchange', checkDirectRoute);
+checkDirectRoute();
+
+function views(){ return document.querySelectorAll('.view'); }
+function setView(name){
+  views().forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  document.querySelectorAll('nav.site button').forEach(b=>b.classList.toggle('active', b.dataset.view===name));
+  if(name==='portal') renderPortal();
+  if(name==='verify') renderVerifyGate();
+  if(name==='home') renderHomeStats();
+  if(name==='about') renderAccordionContainer('aboutList');
+  if(name==='admin') renderAdminGate();
+}
+document.getElementById('mainNav').addEventListener('click', e=>{
+  const btn = e.target.closest('button[data-view]');
+  if(btn) setView(btn.dataset.view);
+});
+document.querySelectorAll('button[data-view]').forEach(b=>{
+  if(!b.closest('nav')) b.addEventListener('click', ()=>setView(b.dataset.view));
+});
+
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+
+async function renderHomeStats(){
+  try{
+    const stats = await api('/api/stats', { noAuth: true });
+    document.getElementById('statMembers').textContent = stats.members;
+    document.getElementById('statCreds').textContent = stats.credentials;
+    document.getElementById('statPending').textContent = '\u2014';
+  }catch(e){ console.error(e); }
+}
+renderHomeStats();
+
+const MEMBERSHIP_TYPES = [
+  { key:'Full', label:'Full Member', title:'Clinical Biomedical Scientist',
+    desc:'Holders of a BSc in Biomedical Sciences, Biomedical Scientists, Biomedical Researchers, and Biomedical Science lecturers. A holder of a Doctoral degree (PhD or equivalent) in a Biomedical Science field also qualifies for Full Membership on that basis, regardless of undergraduate background. Full Members hold voting rights and are eligible for GSBS-BOC credentials (CCBS, Specialist, GSBS Clinical Scientist).',
+    requires:['Official transcript from your degree-awarding institution','Letter of recommendation from your Head of Department (or PhD supervisor, for Doctoral applicants)','Certified copy of your degree certificate'],
+    applyLabel:'Apply as Full Member' },
+  { key:'Student', label:'Student Member', title:'Current Biomedical Science student',
+    desc:'Currently enrolled in a Biomedical Science program at a recognized tertiary institution in Ghana.',
+    requires:['Proof of current enrolment','Official transcript or statement of results to date','Evidence of at least 2 supervised clinical or research practicums, where your year of study requires them'],
+    applyLabel:'Apply as Student Member' },
+  { key:'Associate', label:'Associate Member', title:'Related biomedical fields',
+    desc:'Clinicians in biomedical research, molecular/cell biologists, biochemists, bioinformaticians, biomedical engineers, pharmacologists, biotech and public health professionals, holders of a Master\u2019s degree alone (without a qualifying Bachelor\u2019s or Doctoral degree), and MLS professionals without additional Biomedical Science specialization. No voting rights. Eligible to progress to Full Membership with a qualifying Doctoral degree or documented specialization.',
+    requires:['Application form and supporting documentation for your field','For MLS professionals: no specialization required to join as Associate'],
+    applyLabel:'Apply as Associate Member' },
+  { key:'International', label:'International / Diaspora Member', title:'Ghanaian biomedical scientists abroad',
+    desc:'Resident outside Ghana, including members of the International Advisory Network. Holds Full, Associate, or Honorary status as appropriate to qualifications.',
+    requires:['Same documentation as the corresponding membership class (Full, Associate, or Honorary)'],
+    applyLabel:'Apply as International Member' },
+  { key:'Honorary', label:'Honorary & Fellow', title:'By nomination only',
+    desc:'Distinguished individuals who have made outstanding contributions to biomedical science, health, or the Society, admitted on recommendation of the National Executive Council and approval of the General Assembly.',
+    requires:['Not self-applied, contact the Society to nominate a member'],
+    applyLabel:null }
+];
+let openJoinKey = null;
+
+function renderJoinList(){
+  const list = document.getElementById('joinList');
+  list.innerHTML = MEMBERSHIP_TYPES.map(t => `
+    <li class="join-row">
+      <button class="join-link ${openJoinKey===t.key?'open':''}" onclick="toggleJoinDetail('${t.key}')">
+        <span>${t.label}</span><span class="arrow">${openJoinKey===t.key ? 'Hide' : 'View details'}</span>
+      </button>
+      ${openJoinKey===t.key ? renderJoinDetailHTML(t) : ''}
+    </li>`).join('');
+}
+function renderJoinDetailHTML(t){
+  const reqs = t.requires.map(r=>`<li>${r}</li>`).join('');
+  const btn = t.applyLabel
+    ? `<button class="btn btn-primary btn-sm" style="margin-top:14px;" onclick="goApply('${t.key}')">${t.applyLabel}</button>`
+    : `<p class="hint" style="margin-top:14px;">Not self-applied, contact the Society to nominate a member.</p>`;
+  return `
+    <div class="join-detail-panel">
+      <p class="eyebrow">${t.label}</p>
+      <h3>${t.title}</h3>
+      <p style="color:var(--ink-soft); font-size:13.5px;">${t.desc}</p>
+      <p class="hint" style="margin-top:10px; font-weight:600;">Requirements</p>
+      <ul style="font-size:13.5px; margin:6px 0 0;">${reqs}</ul>
+      ${btn}
+    </div>`;
+}
+function toggleJoinDetail(key){
+  openJoinKey = (openJoinKey === key) ? null : key;
+  renderJoinList();
+}
+renderJoinList();
+
+const ACCORDIONS = {};
+function registerAccordion(containerId, items){
+  ACCORDIONS[containerId] = { items, open:null };
+  renderAccordionContainer(containerId);
+}
+function renderAccordionContainer(containerId){
+  const state = ACCORDIONS[containerId];
+  const list = document.getElementById(containerId);
+  if(!list || !state) return;
+  list.innerHTML = state.items.map(t => `
+    <li class="join-row">
+      <button class="join-link ${state.open===t.key?'open':''}" onclick="toggleAccordionItem('${containerId}','${t.key}')">
+        <span>${t.label}</span><span class="arrow">${state.open===t.key ? 'Hide' : 'View details'}</span>
+      </button>
+      ${state.open===t.key ? `<div class="join-detail-panel">${t.title?`<h3>${t.title}</h3>`:''}<p style="color:var(--ink-soft); font-size:13.5px;">${t.desc}</p></div>` : ''}
+    </li>`).join('');
+}
+function toggleAccordionItem(containerId, key){
+  const state = ACCORDIONS[containerId];
+  state.open = (state.open === key) ? null : key;
+  renderAccordionContainer(containerId);
+}
+
+const HOW_STEPS = [
+  { key:'apply', label:'01 &middot; Apply', title:'Submit your credentials',
+    desc:'Transcript, department recommendation, and certificate (if graduated), or proof of enrolment and practicum evidence for current students.' },
+  { key:'review', label:'02 &middot; Admissions review', title:'Verified by the Membership Admissions Committee',
+    desc:'The Committee verifies documents directly with the issuing institution before approval, no application is approved on unverified documents alone.' },
+  { key:'register', label:'03 &middot; Register', title:'Join the national register',
+    desc:'Approved members receive a Member ID, a portal login, and a certificate. Other registered members can then verify their status by name once logged in.' }
+];
+
+const ABOUT_STRUCTURE = [
+  { key:'assembly', label:'General Assembly',
+    desc:'The supreme governing authority of the Society, comprising all Full Members in good standing. Meets in Annual General Meeting, elects and removes the National Executive Council, and approves the annual report and accounts.' },
+  { key:'nec', label:'National Executive Council',
+    desc:'Eleven elected officers, including President, Vice-President, General Secretary, Treasurer, three committee chairs, and the University of Cape Coast Liaison Officer, serving four-year terms, elected online.' },
+  { key:'divisions', label:'Divisions',
+    desc:'Technical and scientific work is organized through Divisions rather than regional branches: Clinical Biomedical Science, Molecular Medicine, Immunology, Cancer Biology, Infectious Diseases, Genetics and Genomics, Bioinformatics, Biotechnology, Pharmacology, Translational Medicine, Biomedical Education, and Student Division.' },
+  { key:'gbsboc', label:'GSBS Board of Certification',
+    desc:'Sets and verifies professional credentials in four tiers: CCBS (entry-level, IBMS-style competency portfolio), Specialist (ASCP-style, discipline-specific examination), GSBS Clinical Scientist (postgraduate, portfolio plus viva voce), and FGSBS (Fellow, by nomination).' },
+  { key:'chapters', label:'Student Chapters',
+    desc:'Established at tertiary institutions offering Biomedical Science programs, beginning with the University of Cape Coast, with locally elected student leadership reporting to the Education and Student Affairs Committee.' }
+];
+registerAccordion('howList', HOW_STEPS);
+registerAccordion('aboutList', ABOUT_STRUCTURE);
+
+const DOCS = {
+  title: `
+    <p class="eyebrow">Position statement</p>
+    <div class="doc-title">Position Statement on the Use of the Title &ldquo;Biomedical Scientist&rdquo; / &ldquo;Clinical Biomedical Scientist&rdquo;</div>
+    <div class="doc-sub">Ghanaian Society for Biomedical Scientists (GSBS)</div>
+    <div class="doc-body">
+      <h2>1. Purpose</h2>
+      <p>This statement explains why the Ghanaian Society for Biomedical Scientists (GSBS) defines &ldquo;Clinical Biomedical Scientist&rdquo; as a specific, verifiable professional credential, rather than a general descriptive term open to anyone working in a laboratory setting, and why GSBS's Constitution reserves this title, within the Society, for holders of that credential. It is written for members, prospective members, partner institutions, and colleagues in the Medical Laboratory Science (MLS) profession, and is intended to be read alongside, not instead of, GSBS's founding Constitution.</p>
+      <h2>2. What GSBS Means by &ldquo;Clinical Biomedical Scientist&rdquo;</h2>
+      <p>Within GSBS, &ldquo;Clinical Biomedical Scientist&rdquo; refers specifically to a graduate of an accredited Bachelor of Science programme in Biomedical Sciences, currently offered in Ghana at the University of Cape Coast, whose training includes structured, supervised clinical and research practicums undertaken from the second year of study through graduation, in addition to coursework spanning core diagnostic laboratory sciences, molecular diagnostics, genomics, bioinformatics, cancer and molecular/cellular biology, drug discovery, and public health.</p>
+      <p>This is a description of a specific, documented training pathway, not a job title available to anyone who works in or near a medical laboratory. GSBS's certification system (the GSBS Board of Certification, described in the Society's Bylaws) further verifies this training through a supervised competency portfolio before conferring the credential formally.</p>
+      <h2>3. Why a Defined Title Matters</h2>
+      <p>Titles that describe professional training are only useful, to the public, to employers, and to the professionals who hold them, if they mean something specific and verifiable. Where a title is used loosely, by anyone with an adjacent qualification or role, it stops functioning as a signal of training and competency, to the disadvantage of the public and of every professional who actually holds the underlying qualification.</p>
+      <p>GSBS has observed that the title &ldquo;Biomedical Scientist&rdquo; is, in some Ghanaian hospital settings, used informally by Medical Laboratory Science (MLS) professionals, notwithstanding that MLS is a distinct, separately regulated profession in Ghana with its own accredited curriculum, internship structure, and licensing pathway through the Allied Health Professions Council (AHPC). GSBS's position is not that MLS professionals are unqualified or that their title use reflects bad faith, in many cases it likely reflects the absence, until now, of any Ghanaian body clearly defining and defending the term. GSBS's Constitution and this statement are intended to supply that definition going forward.</p>
+      <h2>4. Relationship to Medical Laboratory Science (MLS)</h2>
+      <p>GSBS recognizes Medical Laboratory Science as a distinct, legitimate, and independently regulated profession in Ghana, with its own accredited training pathway and AHPC-licensed scope of practice in routine clinical diagnostic laboratory testing. Nothing in this statement, or in GSBS's Constitution, should be read as a claim that Biomedical Sciences graduates are entitled to practice within MLS's licensed scope, or as a criticism of MLS training or practice.</p>
+      <p>GSBS's position is narrower and more specific: that &ldquo;Clinical Biomedical Scientist,&rdquo; as a title, denotes a particular academic and practicum pathway that is not the MLS pathway, and that conflating the two titles obscures a real difference in training that matters to patients, employers, and regulators alike, particularly as GSBS pursues a distinct statutory licensing pathway for Biomedical Sciences graduates, rather than seeking to be absorbed into or superimposed upon the existing MLS licensing framework.</p>
+      <p>An MLS professional who has obtained additional, verifiable specialized training or postgraduate qualification in a recognized Biomedical Science field, such as molecular diagnostics, genomics, cancer or molecular/cellular biology, bioinformatics, drug discovery, or translational medicine, beyond the standard MLS curriculum, may apply for GSBS Full Membership and use of the credential on the basis of that additional specialization, as set out in GSBS's Constitution and Bylaws.</p>
+      <h2>5. International Precedent and Terminology</h2>
+      <p>GSBS's approach to defining &ldquo;Clinical Biomedical Scientist&rdquo; as a portfolio-verified, competency-based credential follows the model of the UK's Institute of Biomedical Science (IBMS) and the Health and Care Professions Council (HCPC), under which &ldquo;Biomedical Scientist&rdquo; is a legally protected title requiring a specific accredited degree and a supervised registration training portfolio, not merely informal laboratory experience.</p>
+      <p>GSBS notes, for completeness, that international terminology in this field is not fully uniform. The International Federation of Biomedical Laboratory Science (IFBLS), the global federation of national medical laboratory science societies (founded in 1954 as the International Association of Medical Laboratory Technologists), uses &ldquo;Biomedical Laboratory Scientist&rdquo; in a sense broadly equivalent to what Ghana calls Medical Laboratory Scientist. This is precisely why GSBS uses the fuller term &ldquo;Clinical Biomedical Scientist,&rdquo; and defines it explicitly in this statement and in its Constitution, rather than relying on the plain words &ldquo;Biomedical Scientist&rdquo; to carry an unambiguous meaning on their own in the Ghanaian context.</p>
+      <h2>6. Summary</h2>
+      <ul>
+        <li>&ldquo;Clinical Biomedical Scientist,&rdquo; within GSBS, denotes a specific, verifiable academic and practicum pathway, currently associated with the University of Cape Coast's BSc Biomedical Sciences programme.</li>
+        <li>This is distinct from, and not a claim of superiority over, Medical Laboratory Science, which remains a separately regulated profession in Ghana.</li>
+        <li>MLS professionals may earn the GSBS credential through documented additional specialization, as set out in GSBS's Constitution.</li>
+        <li>International usage of similar titles varies; GSBS's definitions in this statement and its Constitution govern usage within the Society, in Ghana.</li>
+        <li>This position is offered in the interest of clarity and public trust, not as a criticism of any individual MLS professional or of the MLS profession as a whole.</li>
+      </ul>
+    </div>`,
+
+  constitution: `
+    <p class="eyebrow">Founding document</p>
+    <div class="doc-title">Constitution of the Ghanaian Society for Biomedical Scientists (GSBS)</div>
+    <div class="doc-sub">A National Professional and Scientific Organization for Clinical Biomedical Scientists, Biomedical Scientists, Biomedical Researchers, and Biomedical Science Students in Ghana. Adopted by the Founding Members.</div>
+    <div class="doc-body">
+      <h2>Preamble</h2>
+      <p>WE, the founding members of the Ghanaian Society for Biomedical Scientists, being graduates, researchers, educators, and students in the field of Biomedical Sciences in the Republic of Ghana, and recognizing the growing and indispensable contribution of Biomedical Sciences to clinical diagnostics, translational medicine, biotechnology, genomics, and public health in Ghana; that graduates holding the Bachelor of Science in Biomedical Sciences are trained and qualified to contribute to clinical practice, yet are, as at the adoption of this Constitution, not afforded a national licensing pathway in Ghana, notwithstanding that comparable graduates are reviewed and accepted for registration to practice by the Institute of Biomedical Science (IBMS) in the United Kingdom; the need for a unified, nationally recognized professional and scientific home for Clinical Biomedical Scientists and the wider biomedical community in Ghana, organized in a manner that is complementary to, and not in competition with, the Medical Laboratory Science profession and its regulatory framework; and the need to advance biomedical research, education, innovation, and professional standards for the benefit of the health of the people of Ghana, DO HEREBY constitute ourselves into an association to be known as the GHANAIAN SOCIETY FOR BIOMEDICAL SCIENTISTS (GSBS), and adopt this Constitution to govern its affairs.</p>
+
+      <h2>Article I. Name, Legal Status, and Registered Office</h2>
+      <h3>Section 1. Name</h3>
+      <p>1.1 The name of the organization shall be the "Ghanaian Society for Biomedical Scientists", which may be referred to by its acronym "GSBS" (hereinafter "the Society").</p>
+      <h3>Section 2. Legal Status</h3>
+      <p>2.1 The Society shall be constituted and registered as a Company Limited by Guarantee under the Companies Act, 2019 (Act 992) of the Republic of Ghana, or such successor legislation as may govern non-profit, membership-based organizations in Ghana.</p>
+      <p>2.2 The Society shall be a not-for-profit body. No part of its income or property shall be distributed, directly or indirectly, to members, except as reasonable compensation for services actually rendered or reimbursement of properly incurred expenses, in accordance with Article VII.</p>
+      <p>2.3 The Society shall be a body corporate with perpetual succession, capable of suing and being sued, acquiring, holding, and disposing of property, and entering into contracts in its own name, subject to the Companies Act, 2019 (Act 992).</p>
+      <h3>Section 3. Registered Office</h3>
+      <p>3.1 The registered office of the Society shall initially be situated at the University of Cape Coast, Central Region, Republic of Ghana, or at such other address as the National Executive Council may from time to time determine and duly notify to the Registrar of Companies.</p>
+      <h3>Section 4. Founding Institutional Base</h3>
+      <p>4.1 The University of Cape Coast (UCC) is recognized as the founding institutional base of the Society, in view of its long history of producing Biomedical Sciences graduates. This designation confers no proprietary or governance right over the Society to the University; it is a historical and organizational designation only. The Society shall remain a national body open to all eligible persons regardless of their institution of training.</p>
+
+      <h2>Article II. Vision, Mission, and Objectives</h2>
+      <h3>Section 1. Vision</h3>
+      <p>1.1 To be the recognized national voice and professional home of Clinical Biomedical Scientists and the wider biomedical science community in Ghana.</p>
+      <h3>Section 2. Mission</h3>
+      <p>2.1 To advance the practice, recognition, education, and research of biomedical science in Ghana, and to secure a clear, nationally recognized professional identity and licensing pathway for Clinical Biomedical Scientists, in a manner that is distinct from, and complementary to, the Medical Laboratory Science profession.</p>
+      <h3>Section 3. Objectives</h3>
+      <p>The objectives of the Society shall be to:</p>
+      <ul>
+        <li>Advance excellence in Clinical Biomedical Science in Ghana, including molecular diagnostics, clinical research, precision medicine, genomics, proteomics, immunology, histopathology research, and translational medicine.</li>
+        <li>Pursue national professional recognition of Clinical Biomedical Scientists as a distinct biomedical profession, including professional standards, Continuing Professional Development (CPD), certification pathways, scope-of-practice guidelines, and career advancement frameworks, on the basis that the Bachelor of Science in Biomedical Sciences curriculum, inclusive of its structured, supervised clinical and research practicums undertaken from the second year of study, meets or exceeds the demonstrated competency standard required for existing medical laboratory licensure, while additionally equipping graduates in research, genomics, bioinformatics, and translational science domains beyond current licensure scope.</li>
+        <li>Engage the Allied Health Professions Council (AHPC), relevant Ministries, and Parliament of Ghana, and other appropriate statutory and regulatory bodies, in advocacy toward the establishment of a national licensing and registration pathway for Biomedical Sciences graduates, substantiated by documented comparison of the Biomedical Sciences practicum structure against existing medical laboratory internship requirements, and drawing on comparative international precedent including the United Kingdom's Institute of Biomedical Science (IBMS) and Health and Care Professions Council (HCPC) framework.</li>
+        <li>Support Biomedical Science education in Ghana through partnership with universities, beginning with the University of Cape Coast, and support for student chapters, research training, internships, mentorship, and career development.</li>
+        <li>Build and sustain a national biomedical research network connecting universities, teaching hospitals, research institutes, and biotechnology companies.</li>
+        <li>Support and promote biomedical innovation, including in AI in medicine, biotechnology start-ups, diagnostics, drug discovery, digital health, and medical devices.</li>
+        <li>Seek affiliation, reciprocal recognition, and partnership with biomedical and allied health professional societies internationally, including in the United Kingdom, elsewhere in Africa, Europe, and North America, including pursuit of international registration of the Society itself.</li>
+        <li>Establish and maintain a national register of Clinical Biomedical Scientists in Ghana, and, subject to applicable law, work toward the eventual publication of a Ghana Journal of Biomedical Science.</li>
+        <li>Pursue registration of the Society as a Professional Body under the Professional Bodies Registration Act, 1973 (N.R.C.D. 143), as a subsequent milestone once the Society's verified, dues-paying membership reaches the threshold prescribed by that Act (currently not less than seventy-five percent of all persons trained and qualified in the profession in Ghana), the Society having first been incorporated as a Company Limited by Guarantee under the Companies Act, 2019 (Act 992) in order to commence operations without delay.</li>
+        <li>Build and maintain the Society's standing as a recognized stakeholder body with the Ministry of Health, independent of and in addition to the Society's engagement with the Allied Health Professions Council under Objective 3, including participation in relevant workforce planning, sector consultations, and policy engagement on diagnostics, genomics, and biotechnology, in furtherance of the Society's objectives generally.</li>
+        <li>Do all such other lawful things as are conducive or incidental to the attainment of the foregoing objectives.</li>
+      </ul>
+
+      <h2>Article III. Membership</h2>
+      <h3>Section 1. Classes of Membership</h3>
+      <p><b>(a) Full (Primary) Members,</b> holders of a Bachelor of Science degree in Biomedical Sciences (Clinical Biomedical Scientists), Biomedical Scientists, Biomedical Researchers, and Biomedical Science lecturers, whose qualifying training is in Biomedical Science. A holder of a Doctoral degree (PhD or equivalent) in a Biomedical Science field, including molecular diagnostics, genomics, cancer or molecular or cellular biology, bioinformatics, drug discovery, translational medicine, or a closely related discipline, is eligible for Full Membership on the basis of that Doctoral degree, regardless of the field of the holder's undergraduate degree, consistent with the treatment of terminal research qualifications by comparable international bodies. A holder of a Master's degree alone, without a qualifying Bachelor's or Doctoral degree as described in this paragraph, is not thereby eligible for Full Membership, and is instead eligible for Associate Membership under paragraph (c). A holder of a Bachelor of Science degree or professional qualification in Medical Laboratory Science (MLS), or a person licensed to practice as a Medical Laboratory Scientist, shall not be eligible for Full Membership, and shall not use or be described under the title &ldquo;Biomedical Scientist&rdquo; for purposes of the Society, solely on the basis of that MLS qualification or license. Such a person may be admitted to Full Membership only where they have subsequently obtained additional, verifiable specialized training, certification, or postgraduate qualification in a recognized Biomedical Science field beyond the standard Medical Laboratory Science curriculum, in which case admission shall be considered on the basis of, and limited to, that additional specialization, subject to verification procedures set out in the Bylaws. This restriction is adopted to preserve the professional identity and title integrity of Clinical Biomedical Scientists and is without prejudice to the eligibility of such persons for Associate Membership under paragraph (c), where applicable. The Society's rationale for this restriction is further explained in the Society's published Position Statement on the Use of the Title &ldquo;Biomedical Scientist&rdquo; / &ldquo;Clinical Biomedical Scientist,&rdquo; which supplements, and does not vary, this Constitution.</p>
+      <p><b>(b) Student Members,</b> persons currently enrolled as undergraduate or graduate students in a Biomedical Science program at a recognized tertiary institution in Ghana.</p>
+      <p><b>(c) Associate Members,</b> clinicians engaged in biomedical research, molecular biologists, cell biologists, biochemists, bioinformaticians, biomedical engineers, pharmacologists, biotechnology professionals, public health researchers, industry scientists, and other persons working in fields related to biomedical science, who do not qualify as Full Members.</p>
+      <p><b>(d) Honorary and Fellow Members,</b> distinguished individuals who have made outstanding contributions to biomedical science, health, or the Society, admitted on the recommendation of the National Executive Council and approval of the General Assembly. Honorary/Fellow membership shall not carry voting rights unless the member also holds Full Membership.</p>
+      <p><b>(e) International/Diaspora Members,</b> Ghanaian biomedical scientists resident outside Ghana, and members of an International Advisory Network established under Article IV, who may hold Full, Associate, or Honorary status as appropriate to their qualifications.</p>
+      <h3>Section 2. Rights of Members</h3>
+      <p>2.1 Subject to Article III, Full Members in good standing shall have the right to vote at the General Assembly, hold office, stand for election, participate in Divisions and Committees, and receive such benefits as the National Executive Council may prescribe. Student, Associate, Honorary, and International/Diaspora Members shall have such rights, including voting rights where applicable, as are set out in the Bylaws made under Article X.</p>
+      <h3>Section 3. Obligations of Members</h3>
+      <p>3.1 Every member shall abide by this Constitution and any Bylaws, Code of Conduct, and lawful decisions of the Society; pay such subscriptions and dues as may be prescribed; and conduct themselves in a manner that upholds the integrity and reputation of the Society and of the biomedical science profession.</p>
+      <h3>Section 4. Admission</h3>
+      <p>4.1 Applications for membership shall be made in the form prescribed by the National Executive Council, accompanied by such evidence of qualification as may be required, and shall be approved in accordance with the Bylaws.</p>
+      <h3>Section 5. Cessation of Membership</h3>
+      <p>5.1 Membership shall cease upon death (for individuals), voluntary resignation in writing, non-payment of dues after due notice, or expulsion for cause following the disciplinary procedure set out in Article IX. A member who ceases to be a member forfeits all rights and privileges of membership but remains liable for any dues or obligations accrued prior to cessation.</p>
+
+      <h2>Article IV. Organizational Structure</h2>
+      <h3>Section 1. General Assembly</h3>
+      <p>1.1 The General Assembly, comprising all Full Members in good standing (and such other members as the Bylaws may admit to vote), is the supreme governing authority of the Society.</p>
+      <p>1.2 The General Assembly shall meet in Annual General Meeting (AGM) as provided in Article VI, and shall have power to elect and remove members of the National Executive Council, approve the annual report and audited accounts, amend this Constitution in accordance with Article X, and decide such other matters as are reserved to it by this Constitution.</p>
+      <h3>Section 2. National Executive Council</h3>
+      <p>2.1 The Society shall be governed between General Assemblies by a National Executive Council (NEC), which shall be the governing board of the Society for purposes of the Companies Act, 2019 (Act 992), comprising the following officers, elected by the General Assembly for the term set out in Article V:</p>
+      <ul>
+        <li>President</li><li>Vice-President</li><li>General Secretary</li><li>Deputy General Secretary</li>
+        <li>Treasurer</li><li>Financial Secretary</li><li>Public Relations and Communications Officer</li>
+        <li>Chair, Professional Recognition and Licensure Advocacy Committee</li>
+        <li>Chair, Education and Student Affairs Committee</li>
+        <li>Chair, Research and Innovation Committee</li>
+        <li>University of Cape Coast Liaison Officer</li>
+        <li>Immediate Past President (ex officio, non-voting on matters of personal interest)</li>
+      </ul>
+      <p>2.2 The National Executive Council shall be responsible for the day-to-day administration of the Society, implementation of General Assembly decisions, financial management within approved budgets, and representation of the Society before government, regulatory bodies including the Allied Health Professions Council, academic institutions, and international partners.</p>
+      <p>2.3 The University of Cape Coast Liaison Officer shall maintain the Society's working relationship with the Department of Biomedical Sciences at the University of Cape Coast, including coordination on curriculum and practicum documentation for the Society's licensure engagement under Article II, support for the founding Student Chapter, and communication between the Department and the National Executive Council. This office shall be reviewed by the National Executive Council as the Society admits members from additional institutions under Article IV, Section 4.</p>
+      <h3>Section 3. Divisions</h3>
+      <p>3.1 The Society shall organize its technical and scientific work through Divisions, rather than primarily through regional branches, including but not limited to: Clinical Biomedical Science; Molecular Medicine; Immunology; Cancer Biology; Infectious Diseases; Genetics and Genomics; Bioinformatics; Biotechnology; Pharmacology; Translational Medicine; Biomedical Education; and Student Division.</p>
+      <p>3.2 Additional Divisions may be created, merged, or dissolved by resolution of the National Executive Council, subject to ratification at the next General Assembly. Each Division shall be coordinated by a Division Head appointed in accordance with the Bylaws.</p>
+      <h3>Section 4. Student Chapters</h3>
+      <p>4.1 Student Chapters may be established at any tertiary institution in Ghana offering a Biomedical Science program, beginning with the University of Cape Coast, subject to recognition by the National Executive Council. Student Chapters shall operate under their own local leadership, coordinated nationally through the Student Division and the Education and Student Affairs Committee.</p>
+      <h3>Section 5. International Advisory Network</h3>
+      <p>5.1 The National Executive Council may establish an International Advisory Network comprising Ghanaian biomedical scientists in the diaspora and international partners, to advise on international registration, professional standards, and reciprocal recognition, including with the Institute of Biomedical Science (IBMS, United Kingdom) and comparable bodies.</p>
+      <h3>Section 6. Secretariat</h3>
+      <p>6.1 The National Executive Council may establish a Secretariat, headed by the General Secretary, to manage the administrative affairs and records of the Society.</p>
+      <h3>Section 7. Founding President</h3>
+      <p>7.1 The person or persons recorded in the Society's founding records as having established the Society and led the drafting of this Constitution shall hold the designation of Founding President (or, where more than one person is so recorded, Founding President and Founding Member(s)), for so long as they remain a member of the Society in good standing.</p>
+      <p>7.2 The designation of Founding President is honorary and advisory. It does not, of itself, confer voting rights on the National Executive Council or the General Assembly, does not exempt the holder from the election requirements of Article V, and is not a substitute for elected office. A Founding President who wishes to exercise voting rights or hold executive authority must be elected or appointed to a National Executive Council office in accordance with Article V and the Bylaws, in the same manner as any other Full Member.</p>
+      <p>7.3 The Founding President shall be entitled to attend and be heard at meetings of the National Executive Council and the General Assembly, to advise on the Society's founding intent and institutional history, and to serve as a continuity resource on the Society's external relationships, including with the University of Cape Coast, the Allied Health Professions Council, and international partners, irrespective of whether the Founding President holds elected office at any given time.</p>
+      <h3>Section 8. Professional Credentials</h3>
+      <p>8.1 The Society shall maintain a system of professional credentials, administered by a Board of Certification established under the Bylaws, distinct from the classes of membership set out in Article III. A member's eligibility for a particular credential, and the rights attached to holding it, are governed by the Bylaws, and no credential shall itself confer or diminish a member's voting rights or class of membership under this Constitution.</p>
+      <p>8.2 The Society's credentialing system shall include a Registration Training Portfolio, by which a graduate demonstrates defined competencies through supervised professional training following the pattern: Bachelor of Science in Biomedical Sciences, approved professional and clinical training, a supervised Competency Portfolio assessed against defined Standards of Proficiency, a qualifying licensing or registration assessment, and, on successful completion, registration as a Clinical Biomedical Scientist. This structure is intended to demonstrate individually verified competence to practice, rather than to assert that every holder of the underlying degree is thereby qualified for clinical practice without further training and assessment.</p>
+      <p>8.3 The Society shall maintain a Continuing Professional Development (CPD) system for its credentialed members, and shall keep the specific content, format, and cycle of that system under periodic review by the Board of Certification, as set out in the Bylaws.</p>
+
+      <h2>Article V. Elections and Tenure of Office</h2>
+      <h3>Section 1. Term of Office</h3>
+      <p>1.1 Members of the National Executive Council shall be elected for a term of four (4) years and shall be eligible for re-election for one further consecutive term in the same office, after which a period of at least one term must elapse before standing again for the same office. Elections shall be conducted online in accordance with the Bylaws.</p>
+      <h3>Section 2. Founding Executive Council</h3>
+      <p>2.1 Notwithstanding Section 1, the first National Executive Council following incorporation shall be constituted by the founding members and shall serve an interim term of not more than eighteen (18) months, at the end of which elections shall be held in accordance with this Article and the Bylaws.</p>
+      <h3>Section 3. Elections</h3>
+      <p>3.1 Elections to the National Executive Council shall be conducted by secret ballot of Full Members in good standing at the Annual General Meeting or an Election Congress convened for that purpose, in accordance with procedures set out in the Bylaws, including nomination, eligibility, and dispute-resolution procedures.</p>
+      <h3>Section 4. Vacancies</h3>
+      <p>4.1 A casual vacancy on the National Executive Council shall be filled by co-option by the remaining members of the Council, subject to ratification at the next General Assembly, for the unexpired portion of the term.</p>
+
+      <h2>Article VI. Meetings</h2>
+      <h3>Section 1. Annual General Meeting</h3>
+      <p>1.1 An Annual General Meeting (AGM) of the General Assembly shall be held not later than the end of the first quarter of each calendar year, upon not less than twenty-one (21) days' written notice to members, to receive the annual report and audited accounts, transact such business as is reserved to the General Assembly, and, where applicable, conduct elections.</p>
+      <h3>Section 2. Extraordinary General Meeting</h3>
+      <p>2.1 An Extraordinary General Meeting (EGM) may be convened by the National Executive Council, or upon written requisition of not less than one-third of Full Members in good standing, upon not less than fourteen (14) days' written notice, to consider only the business specified in the notice.</p>
+      <h3>Section 3. Quorum</h3>
+      <p>3.1 The quorum for a General Assembly meeting shall be one-third of Full Members in good standing or fifty (50) Full Members, whichever is fewer, unless otherwise prescribed in the Bylaws. The quorum for a National Executive Council meeting shall be a simple majority of its voting members.</p>
+      <h3>Section 4. Voting</h3>
+      <p>4.1 Except where this Constitution requires a special majority, decisions of the General Assembly and of the National Executive Council shall be by simple majority of those present and voting, with the presiding officer having a casting vote in the event of a tie.</p>
+      <h3>Section 5. National Executive Council Meetings</h3>
+      <p>5.1 The National Executive Council shall meet not less than once every quarter.</p>
+
+      <h2>Article VII. Finance and Property</h2>
+      <h3>Section 1. Sources of Funds</h3>
+      <p>1.1 The funds of the Society shall consist of membership dues and subscriptions; grants, donations, and sponsorships from individuals, corporate bodies, government, and development partners; proceeds of events, publications, training, and consultancy activities consistent with the Society's not-for-profit status; and such other lawful sources as the National Executive Council may approve.</p>
+      <h3>Section 2. Application of Funds</h3>
+      <p>2.1 The funds and property of the Society shall be applied solely toward the promotion of its objectives as set out in Article II, and no part thereof shall be paid or transferred, directly or indirectly, by way of dividend, bonus, or otherwise, to members, except as reasonable remuneration for services rendered or reimbursement of expenses properly incurred on behalf of the Society.</p>
+      <h3>Section 3. Fiscal Year and Accounts</h3>
+      <p>3.1 The fiscal year of the Society shall run from 1 January to 31 December. The Treasurer shall maintain proper books of account, which shall be audited annually by an independent auditor appointed by the General Assembly, and the audited accounts shall be presented at each Annual General Meeting.</p>
+      <h3>Section 4. Bank Accounts</h3>
+      <p>4.1 The Society shall operate one or more bank accounts in its own name, to be operated by such signatories as the National Executive Council shall designate, requiring not fewer than two signatories for any transaction.</p>
+
+      <h2>Article VIII. Committees</h2>
+      <h3>Section 1. Standing Committees</h3>
+      <p>1.1 The National Executive Council shall establish the following Standing Committees, each chaired by a member of the National Executive Council and comprising such other members as the Council may appoint:</p>
+      <ul>
+        <li>Professional Recognition and Licensure Advocacy Committee, responsible for engagement with the Allied Health Professions Council, Parliament, and other bodies toward a national licensing pathway for Biomedical Sciences graduates, and for international registration and reciprocal recognition of the Society and its members.</li>
+        <li>Education and Student Affairs Committee, responsible for university partnerships, student chapters, mentorship, and career development.</li>
+        <li>Research and Innovation Committee, responsible for the research network, flagship scientific events, and innovation initiatives.</li>
+        <li>Finance and Audit Committee, responsible for financial oversight and liaison with the independent auditor.</li>
+        <li>Ethics and Disciplinary Committee, responsible for the Code of Conduct and disciplinary matters under Article IX.</li>
+      </ul>
+      <h3>Section 2. Ad Hoc Committees</h3>
+      <p>2.1 The National Executive Council or the General Assembly may establish ad hoc committees or task forces for specific purposes, including planning of flagship events such as the Ghana Biomedical Congress, the Ghana Biomedical Research Conference, the Biomedical Innovation Summit, the Clinical Biomedical Scientist Awards, and the Undergraduate Biomedical Research Day.</p>
+
+      <h2>Article IX. Code of Conduct and Disciplinary Procedure</h2>
+      <h3>Section 1. Code of Conduct</h3>
+      <p>1.1 All members shall be bound by a Code of Ethics and Professional Conduct to be adopted by the General Assembly, governing professional and scientific integrity, conflicts of interest, and conduct in the name of the Society, and covering, at minimum, confidentiality, professional competence, integrity, patient and public safety, conflicts of interest, research ethics, data integrity, equality and non-discrimination, professional boundaries, continuing education, and professional misconduct.</p>
+      <h3>Section 2. Disciplinary Procedure</h3>
+      <p>2.1 A member alleged to have breached this Constitution or the Code of Conduct shall be given written notice of the allegation, a reasonable opportunity to respond, and a hearing before the Ethics and Disciplinary Committee, before any sanction, including suspension or expulsion, is imposed. A member sanctioned by the Committee may appeal to the National Executive Council, and thereafter to the General Assembly, whose decision shall be final.</p>
+
+      <h2>Article X. Bylaws and Amendment of the Constitution</h2>
+      <h3>Section 1. Bylaws</h3>
+      <p>1.1 The National Executive Council may make, and the General Assembly may amend, Bylaws not inconsistent with this Constitution, to regulate matters of detail including membership procedures, election procedures, Division and Chapter administration, and financial regulations.</p>
+      <h3>Section 2. Amendment of the Constitution</h3>
+      <p>2.1 This Constitution may be amended only by a resolution passed by not less than two-thirds of Full Members present and voting at a General Assembly (Annual or Extraordinary) convened with notice specifying the proposed amendment, and, where required by law, filed with the Registrar of Companies.</p>
+
+      <h2>Article XI. Dissolution</h2>
+      <h3>Section 1. Resolution to Dissolve</h3>
+      <p>1.1 The Society may be dissolved by a resolution passed by not less than two-thirds of Full Members present and voting at a General Assembly convened specifically for that purpose, subject to compliance with the Companies Act, 2019 (Act 992).</p>
+      <h3>Section 2. Distribution of Assets on Dissolution</h3>
+      <p>2.1 Upon dissolution, and after satisfaction of all debts and liabilities, the remaining assets of the Society shall not be distributed to members but shall be transferred to one or more other not-for-profit bodies in Ghana with objectives similar to those of the Society, as the General Assembly shall determine.</p>
+
+      <h2>Article XII. Miscellaneous</h2>
+      <h3>Section 1. Interpretation</h3>
+      <p>1.1 In this Constitution, unless the context otherwise requires, words importing the singular include the plural and vice versa, and words importing any gender include every gender.</p>
+      <h3>Section 2. Indemnity</h3>
+      <p>2.1 Subject to the Companies Act, 2019 (Act 992), members of the National Executive Council and officers of the Society shall be indemnified out of the assets of the Society against liability properly incurred in the good-faith discharge of their duties.</p>
+      <h3>Section 3. Effective Date</h3>
+      <p>3.1 This Constitution shall take effect upon its adoption by the founding members and, where applicable, its registration with the Registrar of Companies of the Republic of Ghana.</p>
+
+      <h2>Adoption by Founding Members</h2>
+      <p>IN WITNESS WHEREOF, the undersigned founding members have adopted this Constitution as the governing instrument of the Ghanaian Society for Biomedical Scientists on the date set out below.</p>
+      <ul>
+        <li>Evans Kwabena Abor, President</li>
+        <li>Gideon Dartey Appiah, Vice President</li>
+        <li>Humphrey P.K. Addy, Secretary</li>
+        <li>Edward Dodoo, Treasurer</li>
+      </ul>
+    </div>`,
+
+  bylaws: `
+    <p class="eyebrow">Founding document</p>
+    <div class="doc-title">Bylaws of the Ghanaian Society for Biomedical Scientists (GSBS)</div>
+    <div class="doc-sub">Made pursuant to Article X, Section 1 of the Constitution of the Ghanaian Society for Biomedical Scientists.</div>
+    <div class="doc-body">
+      <h2>Article 1. Membership Admission and Verification</h2>
+      <h3>Section 1. Application Documents, Full (Graduated) Members</h3>
+      <p>1.1 An applicant for Full Membership who has completed their programme of study shall submit to the Membership Admissions Committee an official academic transcript issued directly by, or independently verifiable with, the applicant's degree-awarding institution; a letter of recommendation from the Head of Department (or delegated authority) of the applicant's Biomedical Science programme, confirming the applicant's successful completion of the programme, including its practicum and research components; and a certified copy of the applicant's degree certificate.</p>
+      <p>1.2 Where any of the above cannot be produced (for example, a certificate pending congregation), the Membership Admissions Committee may grant provisional membership pending production of the outstanding document within a period not exceeding twelve (12) months.</p>
+      <h3>Section 2. Application Documents, Student Members</h3>
+      <p>2.1 An applicant for Student Membership shall submit proof of current enrolment in a Biomedical Science programme at a recognized tertiary institution, an up-to-date transcript, and, where the applicant has reached a stage of study at which their programme requires supervised practicums, evidence of completion of not fewer than two (2) supervised clinical or research practicums, verified by a letter from the applicant's home department. Where an applicant's year of study has not yet reached the stage at which a practicum is required by their programme's structure, this requirement shall not apply, and the applicant shall be admitted on the basis of enrolment and transcript alone.</p>
+      <p>2.2 A Student Member shall be required to submit updated evidence of practicum completion as they progress through their programme, and shall be transitioned to Full Membership upon graduation and submission of the documents required under Section 1.</p>
+      <h3>Section 3. Verification Procedure</h3>
+      <p>3.1 The Membership Admissions Committee shall independently verify submitted documents with the issuing institution wherever practicable, including by direct correspondence with the relevant Head of Department or Registrar.</p>
+      <p>3.2 Applications shall be determined within thirty (30) days of receipt of a complete application. An applicant may appeal a refusal to the National Executive Council within fourteen (14) days of notification.</p>
+      <h3>Section 4. Associate, Honorary, and International/Diaspora Members</h3>
+      <p>4.1 Applications for Associate, Honorary, and International/Diaspora Membership shall follow the documentation and verification principles of this Article, adapted as appropriate to the applicant's category and qualifications, as the Membership Admissions Committee shall prescribe.</p>
+
+      <h2>Article 2. Elections</h2>
+      <h3>Section 1. Mode of Election</h3>
+      <p>1.1 All elections to the National Executive Council shall be conducted online, using a secure electronic voting platform designated by the National Executive Council, accessible to Full Members in good standing wherever resident, including International/Diaspora Members. Paper or in-person balloting may be used only where the Election Committee determines that reliable electronic access cannot be assured for a significant portion of the electorate, in which case a hybrid process shall be adopted.</p>
+      <h3>Section 2. Election Committee</h3>
+      <p>2.1 An independent Election Committee, comprising members who are not candidates for office, shall be constituted by the National Executive Council not less than ninety (90) days before an election, to administer nominations, voting, and results.</p>
+      <h3>Section 3. Nominations and Campaign</h3>
+      <p>3.1 Nominations shall open not less than sixty (60) days before the election date and close not less than thirty (30) days before it. Candidates shall meet the eligibility requirements of Article 3. A campaign period of not less than fourteen (14) days shall precede voting.</p>
+      <h3>Section 4. Voting</h3>
+      <p>4.1 The voting window shall remain open for not less than five (5) consecutive days. Each Full Member in good standing shall have one vote per office. The electronic voting platform shall preserve voter anonymity while enabling verification of voter eligibility.</p>
+      <h3>Section 5. Results and Disputes</h3>
+      <p>5.1 The Election Committee shall certify and publish results within seven (7) days of the close of voting. A candidate or member may lodge a dispute with the Election Committee within seven (7) days of publication; unresolved disputes shall be referred to the National Executive Council, and, if still unresolved, to the next General Assembly, whose decision shall be final.</p>
+
+      <h2>Article 3. Term of Office and Vacancies</h2>
+      <h3>Section 1. Term</h3>
+      <p>1.1 In accordance with Article V of the Constitution, members of the National Executive Council shall serve a term of four (4) years, with eligibility for re-election for one further consecutive term.</p>
+      <h3>Section 2. Change of Executive</h3>
+      <p>2.1 A change of the National Executive Council shall take place at the end of each four-year term through the online election process set out in Article 2, save where this Article provides for appointment.</p>
+      <h3>Section 3. Appointment Where Necessary</h3>
+      <p>3.1 The National Executive Council may fill a casual vacancy, or constitute an interim officer position, by appointment or co-optation, where an online election is not immediately practicable, including but not limited to a vacancy arising mid-term, the founding/interim Executive Council period under Article V, Section 2 of the Constitution, and the initial constitution of a newly created Division, Chapter, or Committee leadership position pending the next scheduled election. Any such appointment shall be ratified at the next General Assembly and shall expire at the next scheduled election unless otherwise ratified.</p>
+      <h3>Section 4. Leadership Transition Continuity</h3>
+      <p>4.1 Not later than thirty (30) days before the expiry of its term, or, in the case of an outgoing interim National Executive Council, not later than thirty (30) days before the election required under Article V, Section 2 of the Constitution, the outgoing National Executive Council shall prepare and deliver to the incoming National Executive Council and to the General Assembly a written transition report, covering at minimum the current status of the Society's engagement with the Allied Health Professions Council (AHPC) and any other regulator or Ministry on the licensure objectives set out in Article II of the Constitution; the status of the GSBS Board of Certification and any credentials issued; the Society's financial position; and a recommended roadmap of priorities for the incoming National Executive Council on each of the foregoing.</p>
+      <p>4.2 The transition report required by Section 4.1 shall be read into the record of the General Assembly meeting at which the incoming National Executive Council is confirmed, and shall be retained in the Society's permanent records, so that a change in leadership does not interrupt or reset the Society's pursuit of its objectives under Article II of the Constitution.</p>
+
+      <h2>Article 4. GSBS Board of Certification and the Clinical Biomedical Scientist Credential</h2>
+      <p>4.0 The Society hereby establishes the GSBS Board of Certification (&ldquo;GSBS-BOC&rdquo;) as a standing certifying body operating under the oversight of the Professional Recognition and Licensure Advocacy Committee, to administer a professional credentialing system for Clinical Biomedical Scientists in Ghana. The GSBS-BOC credential is a professional, voluntary credential of the Society pending the establishment of statutory AHPC licensure; it is designed so that, upon establishment of such licensure, its structure and examinations may be readily adopted or referenced by AHPC as a registration pathway, consistent with international practice in which professional-body certification examinations underpin statutory licensure.</p>
+      <p>4.1 The GSBS-BOC credentialing system is structured in three tiers: (i) a base Clinical Biomedical Scientist credential (CCBS), structured on the registration and competency-portfolio model of the UK Institute of Biomedical Science (IBMS) and the Health and Care Professions Council (HCPC) Standards of Proficiency; (ii) advanced Specialist credentials in named disciplines, structured on the multi-route eligibility model of the American Society for Clinical Pathology Board of Certification (ASCP BOC); and (iii) the GSBS Clinical Scientist credential, for postgraduate-qualified professionals already working at an advanced clinical level, structured on the portfolio-and-viva model of the IBMS Clinical Scientist Certificate of Attainment and the HCPC Standards of Proficiency for Clinical Scientists.</p>
+
+      <h3>Part A. Base Credential: Certified Clinical Biomedical Scientist (CCBS)</h3>
+      <p><b>Structure and Rationale.</b> The CCBS credential is the foundational GSBS-BOC credential, denoting demonstrated competency to practice as a Clinical Biomedical Scientist. Consistent with the IBMS/HCPC model, eligibility rests on the combination of an accredited academic qualification and a documented, supervised competency portfolio, assessed against a defined set of Standards of Proficiency, culminating in a qualifying examination, rather than on academic qualification alone.</p>
+      <p><b>Eligibility Routes.</b></p>
+      <ul>
+        <li>Route 1, Accredited Degree Route: a Bachelor of Science degree in Biomedical Sciences from a GSBS-recognized programme, including its integrated supervised clinical and research practicums, together with completion of the GSBS Registration Training Portfolio demonstrating the GSBS Standards of Proficiency, and a pass in the GSBS-BOC Qualifying Examination.</li>
+        <li>Route 2, Certificate of Competence by Equivalence: an applicant holding a Bachelor of Science degree in Biomedical Sciences who is working in, or has documented access to, a clinical or research laboratory setting, with not less than three (3) years of relevant supervised professional practice, may apply through a portfolio-based equivalence route in lieu of Route 1's formal Registration Training Portfolio, followed by the GSBS-BOC Qualifying Examination.</li>
+        <li>Route 3, International/Reciprocal Recognition Route: an applicant holding a recognized international credential, including HCPC registration as a Biomedical Scientist (UK), ASCP or ASCPi certification as a Medical Laboratory Scientist, or an equivalent credential recognized by the National Executive Council on the recommendation of the GSBS-BOC, may apply for direct recognition or an abridged assessment, subject to verification.</li>
+      </ul>
+      <p><b>Standards of Proficiency Domains (Registration Training Portfolio).</b></p>
+      <ul>
+        <li>Professional and ethical practice, and health and safety in the laboratory</li>
+        <li>Pre-analytical, analytical, and post-analytical processes across core disciplines (clinical chemistry, hematology, microbiology, blood transfusion science, histopathology/cytology, immunology)</li>
+        <li>Quality assurance, quality control, and accreditation standards</li>
+        <li>Data handling, laboratory information systems, and result interpretation and reporting</li>
+        <li>Research methodology and evidence-based practice</li>
+      </ul>
+      <p><b>Qualifying Examination.</b> The GSBS-BOC Qualifying Examination shall assess the Standards of Proficiency domains above through a combination of applied knowledge, scenario-based, and practical/portfolio-review components, in proportions to be prescribed by the GSBS-BOC Examination Committee and reviewed periodically.</p>
+
+      <h3>Part B. Specialist Credentials</h3>
+      <p><b>Structure and Rationale.</b> Building on the CCBS base credential, the GSBS-BOC offers advanced Specialist credentials in named disciplines that reflect the additional depth of the Biomedical Sciences curriculum beyond standard diagnostic laboratory practice. These are structured on the ASCP BOC model of multiple, degree- and experience-differentiated eligibility routes into a single discipline-specific examination.</p>
+      <p><b>Specialist Credential Disciplines.</b></p>
+      <ul>
+        <li>Specialist in Molecular Diagnostics (SMD-GSBS)</li>
+        <li>Specialist in Genomics (SG-GSBS)</li>
+        <li>Specialist in Cancer, Molecular, and Cellular Biology (SCMB-GSBS)</li>
+        <li>Specialist in Bioinformatics (SBI-GSBS)</li>
+        <li>Specialist in Immunology (SIM-GSBS)</li>
+        <li>Specialist in Translational Medicine (STM-GSBS)</li>
+        <li>Specialist in Drug Discovery and Pharmacology (SDD-GSBS)</li>
+        <li>Specialist in Public Health Biomedical Science (SPH-GSBS)</li>
+      </ul>
+      <p>Additional Specialist disciplines may be created or retired by resolution of the National Executive Council on the recommendation of the GSBS-BOC and the relevant Division.</p>
+      <p><b>Eligibility Routes (per Specialist discipline).</b></p>
+      <ul>
+        <li>Route 1: holds the CCBS credential and a baccalaureate degree with coursework in the relevant discipline, plus not less than one (1) year of relevant supervised experience.</li>
+        <li>Route 2: holds a Master's degree in the relevant discipline or a closely related field, plus not less than six (6) months of relevant supervised or research experience.</li>
+        <li>Route 3: holds a Doctorate (PhD or equivalent) in the relevant discipline or a closely related field; such applicants may proceed directly to the Specialist examination without a separate experience requirement, at the discretion of the GSBS-BOC.</li>
+        <li>Route 4: holds the CCBS credential and can document not less than three (3) years of substantial, verifiable professional experience concentrated in the relevant discipline, in lieu of the postgraduate qualification required under Routes 1&ndash;3.</li>
+      </ul>
+      <p><b>Specialist Examination.</b> Each Specialist examination shall be developed and maintained by a discipline-specific GSBS-BOC subcommittee, comprising credentialed practitioners and academics in that discipline, and shall be reviewed periodically for currency.</p>
+
+      <h3>Part D. GSBS Clinical Scientist (Advanced Postgraduate Credential)</h3>
+      <p>The GSBS Clinical Scientist credential recognizes postgraduate-qualified professionals who already function at an advanced, clinically autonomous level, and follows the portfolio-and-viva model of the IBMS Clinical Scientist Certificate of Attainment and the HCPC Standards of Proficiency for Clinical Scientists, in place of a written examination.</p>
+      <p><b>Recognized Areas.</b> The GSBS Clinical Scientist credential shall initially be available in four areas, consistent with the IBMS model: Clinical Biochemistry, Clinical Immunology, Hematology, and Clinical Microbiology, and may be extended by the GSBS-BOC to additional areas within the Biomedical Sciences curriculum, including molecular diagnostics and genomics, as the Society's assessment capacity develops.</p>
+      <p><b>Eligibility.</b> An applicant for the GSBS Clinical Scientist credential must be a Full Member of the Society in good standing, or hold the CCBS credential, on the basis of a Bachelor of Science degree in Biomedical Sciences (or a qualification recognized as equivalent under Article III of the Constitution); hold a Master's degree (MSc or equivalent) or a Doctoral degree in a relevant field, obtained subsequent to that Bachelor's degree; already be working at a level equivalent to a registered clinical scientist, including making or contributing directly to clinical decisions and providing scientific advice affecting patient diagnosis or treatment; have received appropriate supervised training and assessment for their current role; and be able to demonstrate, through a combination of academic qualification and professional experience, that they meet the GSBS Standards of Proficiency for Clinical Scientists prescribed by the GSBS-BOC for the relevant area.</p>
+      <p>This eligibility requirement is deliberate: it ensures that every GSBS Clinical Scientist credential is held by a person drawn from the same defined Biomedical Sciences training population that constitutes the Society's Full Membership, consistent with the Society's objective of registration as a Professional Body under the Professional Bodies Registration Act, 1973 (N.R.C.D. 143), which requires the Society's members to be trained and qualified in a single, recognized profession.</p>
+      <p><b>Assessment.</b> An applicant meeting the eligibility requirements above shall be assessed through a portfolio of evidence, mapped by the applicant to the GSBS Standards of Proficiency for Clinical Scientists in the relevant area, and reviewed by GSBS-BOC assessors; and a viva voce (oral) examination, conducted by a panel appointed by the GSBS-BOC, to assess the applicant's ability to apply their knowledge and skills in clinical decision-making. An applicant who successfully completes both components shall be awarded the GSBS Clinical Scientist credential in the relevant area, and shall be entered on the GSBS national register maintained under Part F.</p>
+
+      <h3>Part E. Fellow of the Ghanaian Society for Biomedical Scientists (FGSBS)</h3>
+      <p>The FGSBS is the Society's highest professional distinction, awarded not by examination but by portfolio review and nomination, to holders of the CCBS, a Specialist credential, or the GSBS Clinical Scientist credential who have made sustained, significant contributions to biomedical science practice, research, education, or leadership in Ghana, on criteria and through a process to be prescribed by the National Executive Council on the recommendation of the GSBS-BOC.</p>
+
+      <h3>Part F. Credential Maintenance and Register</h3>
+      <p>All GSBS-BOC credentials (CCBS, Specialist, GSBS Clinical Scientist, and FGSBS) shall be subject to a Credential Maintenance Program, requiring renewal every three (3) years through documented Continuing Professional Development (CPD) activity in an amount and form to be prescribed by the GSBS-BOC. A credential not renewed within the prescribed period shall lapse, and reinstatement shall require such assessment as the GSBS-BOC may prescribe. The GSBS-BOC shall maintain a national register of all persons holding a current, unlapsed credential under this Article, available for public and employer verification.</p>
+
+      <h2>Article 5. Divisions and Chapters</h2>
+      <h3>Section 1. Division Administration</h3>
+      <p>1.1 Each Division under Article IV, Section 3 of the Constitution shall be led by a Division Head, appointed by the National Executive Council for a term coterminous with that of the Council, and may establish its own technical working groups subject to National Executive Council approval.</p>
+      <h3>Section 2. Student Chapter Administration</h3>
+      <p>2.1 A Student Chapter shall be recognized upon application by not fewer than ten (10) Student Members at a given institution, endorsed by a faculty advisor from the host institution's Biomedical Science department, and approval of the Education and Student Affairs Committee. Each Student Chapter shall elect its own local leadership annually, in a manner consistent with Article 2 of these Bylaws so far as practicable at the local level.</p>
+
+      <h2>Article 6. Financial Regulations</h2>
+      <h3>Section 1. Dues</h3>
+      <p>1.1 Membership dues shall be proposed by the National Executive Council and approved by the General Assembly, and may be differentiated by membership class (Full, Student, Associate, Honorary, International/Diaspora). Student Members shall pay a reduced rate to be determined by the National Executive Council.</p>
+      <h3>Section 2. GSBS-BOC Fees</h3>
+      <p>2.1 The GSBS-BOC may charge separate, cost-recovery-based application and examination fees for CCBS, Specialist, and Credential Maintenance processes, to be approved by the National Executive Council.</p>
+
+      <h2>Article 7. Amendment of these Bylaws</h2>
+      <p>7.1 These Bylaws may be amended by resolution of the National Executive Council, subject to ratification by simple majority at the next General Assembly, provided that any amendment inconsistent with the Constitution shall be of no effect unless the Constitution is first or simultaneously amended in accordance with Article X of the Constitution.</p>
+    </div>`
+};
+
+function showDocument(key){
+  document.getElementById('docviewerContent').innerHTML = DOCS[key] || '<p class="hint">Document not found.</p>';
+  setView('docviewer');
+  window.scrollTo(0,0);
+}
+
+
+function goApply(type){
+  setView('apply');
+  const sel = document.getElementById('apType');
+  if(sel) sel.value = type;
+}
+
+async function submitApplication(e){
+  e.preventDefault();
+  const name = document.getElementById('apFullName').value.trim();
+  const email = document.getElementById('apEmail').value.trim();
+  const type = document.getElementById('apType').value;
+  const institution = document.getElementById('apInstitution').value.trim();
+  const year = document.getElementById('apYear').value.trim();
+  const docs = document.getElementById('apDocs').value.trim();
+  const phone = document.getElementById('apPhone').value.trim();
+  const fileInput = document.getElementById('apFiles');
+  const files = fileInput && fileInput.files ? Array.from(fileInput.files) : [];
+  if(!name || !email){ return; }
+
+  const passcode = String(Math.floor(100000 + Math.random()*900000));
+  const fd = new FormData();
+  fd.append('name', name); fd.append('email', email); fd.append('type', type);
+  fd.append('institution', institution); fd.append('year', year); fd.append('docs', docs);
+  fd.append('phone', phone); fd.append('passcode', passcode);
+  files.forEach(f => fd.append('files', f));
+
+  const out = document.getElementById('applyOutput');
+  try{
+    const result = await api('/api/apply', { method: 'POST', body: fd, noAuth: true });
+    document.getElementById('applyForm').reset();
+    out.innerHTML = `
+      <div class="verify-result">
+        <h3>Application submitted</h3>
+        <p style="font-size:13.5px;">Save these credentials to check your status in the Member Portal:</p>
+        <p><span class="id-badge">${result.memberId}</span> &nbsp; Passcode: <span class="id-badge">${passcode}</span></p>
+        <p class="hint">Your application is now Pending review${files.length ? ` (${files.length} file${files.length>1?'s':''} attached)` : ''}. You'll see updates in your portal as the Admissions Committee processes it.</p>
+      </div>`;
+    renderHomeStats();
+  }catch(err){
+    out.innerHTML = `<div class="banner warn">${err.message}</div>`;
+  }
+}
+
+function renderVerifyGate(){
+  const el = document.getElementById('verifyGate');
+  if(!memberToken){
+    el.innerHTML = `<div class="banner warn">Member verification is only available to registered members. <a href="#" onclick="setView('login');return false;">Log in</a> to search the register.</div>`;
+    return;
+  }
+  el.innerHTML = `
+    <div class="panel" style="margin-top:20px;">
+      <div class="field">
+        <label for="verifyInput">Member name</label>
+        <input id="verifyInput" placeholder="e.g. Ama Boateng">
+      </div>
+      <button class="btn btn-primary btn-block" onclick="doVerify()">Search the register</button>
+    </div>
+    <div id="verifyOutput"></div>`;
+}
+
+async function doVerify(){
+  if(!memberToken) return;
+  const q = document.getElementById('verifyInput').value.trim();
+  const out = document.getElementById('verifyOutput');
+  if(!q){ out.innerHTML=''; return; }
+  try{
+    const { results } = await api('/api/verify?name=' + encodeURIComponent(q), { method: 'GET' });
+    if(!results.length){
+      out.innerHTML = `<div class="verify-none">No active member matches &ldquo;${q}&rdquo; on the national register.</div>`;
+      return;
+    }
+    out.innerHTML = results.map(found => `
+      <div class="verify-result">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div>
+            <p class="hint" style="margin:0;">Member ID <span class="id-badge">${found.id}</span></p>
+            <h3 style="margin-top:8px;">${found.name}</h3>
+            <p class="hint">${found.type} Member</p>
+          </div>
+          <span class="status-chip status-${found.status}">${found.status}</span>
+        </div>
+      </div>`).join('');
+  }catch(err){
+    out.innerHTML = `<div class="banner warn">${err.message}</div>`;
+  }
+}
+
+async function doLogin(){
+  const id = document.getElementById('loginId').value.trim().toUpperCase();
+  const pass = document.getElementById('loginPass').value.trim();
+  const err = document.getElementById('loginError');
+  try{
+    const result = await api('/api/login', { method: 'POST', body: { memberId: id, passcode: pass }, noAuth: true });
+    memberToken = result.token;
+    localStorage.setItem('gsbs_member_token', memberToken);
+    err.innerHTML = '';
+    setView('portal');
+  }catch(e){
+    err.innerHTML = '<p class="hint" style="color:var(--clay);">Member ID or passcode not recognized.</p>';
+  }
+}
+
+async function renderPortal(){
+  const el = document.getElementById('portalContent');
+  if(!memberToken){
+    el.innerHTML = `<div class="banner warn">You're not logged in. <a href="#" onclick="setView('login');return false;">Go to member login</a>.</div>`;
+    return;
+  }
+  let data;
+  try{
+    data = await api('/api/portal', { method: 'GET' });
+  }catch(e){
+    memberToken = null;
+    localStorage.removeItem('gsbs_member_token');
+    el.innerHTML = `<div class="banner warn">${e.message} <a href="#" onclick="setView('login');return false;">Log in again</a>.</div>`;
+    return;
+  }
+  const m = data.member;
+
+  const credCards = (data.credentials||[]).map(c=>`
+    <div class="cert">
+      <div class="cert-top"><span>GSBS-BOC CREDENTIAL</span><span class="seal"><img src="${LOGO_DATA_URI}" alt="GSBS seal"></span></div>
+      <h3>${c.label}</h3>
+      <p class="name">${m.name}</p>
+      <p class="hint">Member ID ${m.id} &middot; Certificate No. ${c.certNo || '\u2014'} &middot; Issued ${String(c.issued).slice(0,10)} &middot; Expires ${String(c.expires).slice(0,10)}</p>
+    </div>`).join('') || `<div class="verify-none">No credentials issued yet. Credentials appear here once your application is approved.</div>`;
+
+  const timeline = (data.updates||[]).map(u=>`
+    <div class="timeline-item"><div class="timeline-date">${String(u.date).slice(0,10)}</div><div>${u.text}</div></div>`).join('');
+
+  const appRows = (data.applications||[]).map(a=>`
+    <tr><td>${a.id}</td><td>${a.type}</td><td>${String(a.submitted).slice(0,10)}</td><td><span class="status-chip status-${a.status}">${a.status}</span></td></tr>`).join('');
+
+  const canRenew = m.status==='active';
+
+  el.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px;">
+      <div>
+        <p class="eyebrow">Member portal</p>
+        <h1 style="font-size:26px; margin-bottom:4px;">${m.name}</h1>
+        <p class="hint">${m.id} &middot; ${m.type} Member &middot; ${m.institution||''}</p>
+      </div>
+      <div style="text-align:right;">
+        <span class="status-chip status-${m.status}">${m.status}</span><br>
+        <button class="btn btn-ghost btn-sm" style="margin-top:8px;" onclick="memberLogout()">Log out</button>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <h2 style="font-size:18px;">Your credentials</h2>
+        ${credCards}
+        ${canRenew ? `<button class="btn btn-primary" style="margin-top:14px;" onclick="requestRenewal()">Request renewal</button>` : ''}
+      </div>
+      <div>
+        <h2 style="font-size:18px;">Application status</h2>
+        <table class="ledger">
+          <tr><th>ID</th><th>Type</th><th>Submitted</th><th>Status</th></tr>
+          ${appRows || '<tr><td colspan="4" class="hint">No applications on file</td></tr>'}
+        </table>
+        <h2 style="font-size:18px; margin-top:26px;">Timeline</h2>
+        <div class="timeline">${timeline || '<p class="hint">No updates yet</p>'}</div>
+      </div>
+    </div>`;
+}
+function memberLogout(){
+  memberToken = null;
+  localStorage.removeItem('gsbs_member_token');
+  document.getElementById('loginId').value='';
+  document.getElementById('loginPass').value='';
+  setView('login');
+}
+
+async function requestRenewal(){
+  try{
+    await api('/api/renew', { method: 'POST', body: {} });
+    renderPortal();
+  }catch(e){
+    alert(e.message);
+  }
+}
+
+async function renderAdminGate(){
+  const body = document.getElementById('adminGateBody');
+  document.getElementById('adminGate').style.display = 'block';
+  document.getElementById('adminContent').style.display = 'none';
+  let configured = true;
+  try{
+    const status = await api('/api/admin/status', { method: 'GET', noAuth: true });
+    configured = status.configured;
+  }catch(e){ /* assume configured, unlock will surface the real error */ }
+
+  if(!configured){
+    body.innerHTML = `
+      <p class="hint" style="margin-bottom:10px;">No passcode has been set yet. Choose one now, this will be required for all future admin access.</p>
+      <div class="field"><label>New passcode</label><input id="adminSetupNew" type="password"></div>
+      <div class="field"><label>Confirm passcode</label><input id="adminSetupConfirm" type="password"></div>
+      <button class="btn btn-primary btn-block" onclick="adminFirstTimeSetup()">Set passcode</button>
+      <p id="adminSetupErr" class="hint" style="display:none; color:var(--clay);"></p>`;
+  } else if(adminToken){
+    document.getElementById('adminGate').style.display='none';
+    document.getElementById('adminContent').style.display='block';
+    renderAdmin();
+  } else {
+    body.innerHTML = `
+      <div class="field"><label>Admin passcode</label><input id="adminPass" type="password"></div>
+      <button class="btn btn-primary btn-block" onclick="adminUnlock()">Unlock</button>
+      <p id="adminPassErr" class="hint" style="display:none; color:var(--clay);">Incorrect passcode.</p>`;
+  }
+}
+async function adminFirstTimeSetup(){
+  const next = document.getElementById('adminSetupNew').value.trim();
+  const confirm = document.getElementById('adminSetupConfirm').value.trim();
+  const errEl = document.getElementById('adminSetupErr');
+  if(next.length < 6){ errEl.style.display='block'; errEl.textContent = 'Passcode must be at least 6 characters.'; return; }
+  if(next !== confirm){ errEl.style.display='block'; errEl.textContent = 'Passcode and confirmation do not match.'; return; }
+  try{
+    await api('/api/admin/setup', { method: 'POST', body: { passcode: next }, noAuth: true });
+    renderAdminGate();
+  }catch(e){
+    errEl.style.display='block'; errEl.textContent = e.message;
+  }
+}
+async function adminUnlock(){
+  const val = document.getElementById('adminPass').value.trim();
+  const errEl = document.getElementById('adminPassErr');
+  try{
+    const result = await api('/api/admin/login', { method: 'POST', body: { passcode: val }, noAuth: true });
+    adminToken = result.token;
+    localStorage.setItem('gsbs_admin_token', adminToken);
+    if(errEl) errEl.style.display = 'none';
+    document.getElementById('adminGate').style.display='none';
+    document.getElementById('adminContent').style.display='block';
+    renderAdmin();
+  }catch(e){
+    if(errEl) errEl.style.display = 'block';
+  }
+}
+
+async function renderAdmin(){
+  let applications = [];
+  try{
+    const result = await api('/api/admin/applications', { method: 'GET' });
+    applications = result.applications;
+  }catch(e){
+    adminToken = null;
+    localStorage.removeItem('gsbs_admin_token');
+    renderAdminGate();
+    return;
+  }
+  const rows = applications.map(a=>{
+    const files = a.files || [];
+    const fileList = files.length ? files.map(f=>`<div class="hint">${f}</div>`).join('') : '<span class="hint">None</span>';
+    return `
+    <tr>
+      <td>${a.id}</td>
+      <td>${a.applicantName}<br><span class="hint">${a.memberId}</span></td>
+      <td>${a.type}</td>
+      <td>${a.membershipType||''}</td>
+      <td>${fileList}</td>
+      <td>${String(a.submitted).slice(0,10)}</td>
+      <td>
+        <button class="btn btn-primary btn-sm" onclick="approveApp('${a.id}')">Approve</button>
+        <button class="btn btn-ghost btn-sm" onclick="rejectApp('${a.id}')">Reject</button>
+      </td>
+    </tr>`;}).join('');
+  document.getElementById('adminContent').innerHTML = `
+    <h2 style="font-size:18px;">Pending applications (${applications.length})</h2>
+    <table class="ledger">
+      <tr><th>App ID</th><th>Applicant</th><th>Type</th><th>Membership</th><th>Files</th><th>Submitted</th><th>Action</th></tr>
+      ${rows || '<tr><td colspan="7" class="hint">Queue is empty</td></tr>'}
+    </table>
+    <div class="panel" style="margin-top:24px;">
+      <h3 style="font-size:15px; margin-bottom:10px;">Change admin passcode</h3>
+      <div class="field">
+        <label>Current passcode</label>
+        <input id="adminPassCurrent" type="password">
+      </div>
+      <div class="field">
+        <label>New passcode</label>
+        <input id="adminPassNew" type="password">
+      </div>
+      <div class="field">
+        <label>Confirm new passcode</label>
+        <input id="adminPassConfirm" type="password">
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="changeAdminPass()">Update passcode</button>
+      <p id="adminPassChangeMsg" class="hint" style="display:none;"></p>
+    </div>`;
+}
+
+async function changeAdminPass(){
+  const current = document.getElementById('adminPassCurrent').value.trim();
+  const next = document.getElementById('adminPassNew').value.trim();
+  const confirm = document.getElementById('adminPassConfirm').value.trim();
+  const msgEl = document.getElementById('adminPassChangeMsg');
+  msgEl.style.display = 'block';
+  if(next.length < 6){ msgEl.style.color = 'var(--clay)'; msgEl.textContent = 'New passcode must be at least 6 characters.'; return; }
+  if(next !== confirm){ msgEl.style.color = 'var(--clay)'; msgEl.textContent = 'New passcode and confirmation do not match.'; return; }
+  try{
+    await api('/api/admin/change-passcode', { method: 'POST', body: { currentPasscode: current, newPasscode: next } });
+    msgEl.style.color = 'var(--green)';
+    msgEl.textContent = 'Passcode updated.';
+    document.getElementById('adminPassCurrent').value = '';
+    document.getElementById('adminPassNew').value = '';
+    document.getElementById('adminPassConfirm').value = '';
+  }catch(e){
+    msgEl.style.color = 'var(--clay)';
+    msgEl.textContent = e.message;
+  }
+}
+
+async function approveApp(appId){
+  try{
+    await api(`/api/admin/applications/${appId}/approve`, { method: 'POST', body: {} });
+    renderAdmin();
+    renderHomeStats();
+  }catch(e){ alert(e.message); }
+}
+
+async function rejectApp(appId){
+  try{
+    await api(`/api/admin/applications/${appId}/reject`, { method: 'POST', body: {} });
+    renderAdmin();
+    renderHomeStats();
+  }catch(e){ alert(e.message); }
+}
+</script>
+</body>
+</html>
