@@ -4,11 +4,10 @@ const fs = require('fs');
 const path = require('path');
 const { Pool } = require('pg');
 
-async function main() {
+async function runMigration() {
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) {
-    console.error('DATABASE_URL is not set. On Railway, add a Postgres plugin to this project and it will be set automatically.');
-    process.exit(1);
+    throw new Error('DATABASE_URL is not set.');
   }
   const pool = new Pool({
     connectionString,
@@ -18,12 +17,17 @@ async function main() {
   try {
     await pool.query(sql);
     console.log('Migration complete: all tables exist.');
-  } catch (err) {
-    console.error('Migration failed:', err.message);
-    process.exit(1);
   } finally {
     await pool.end();
   }
 }
 
-main();
+module.exports = runMigration;
+
+// Still runnable directly: node db/migrate.js
+if (require.main === module) {
+  runMigration().catch((err) => {
+    console.error('Migration failed:', err.message);
+    process.exit(1);
+  });
+}

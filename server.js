@@ -30,6 +30,15 @@ app.get('*', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`GSBS member portal listening on port ${PORT}`);
-});
+const runMigration = require('./db/migrate');
+
+runMigration()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`GSBS member portal listening on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('Startup migration failed, server did not start:', err.message);
+    process.exit(1);
+  });
