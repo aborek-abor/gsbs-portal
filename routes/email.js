@@ -27,4 +27,28 @@ async function sendPasscodeResetEmail(toEmail, resetUrl) {
   });
 }
 
-module.exports = { sendPasscodeResetEmail };
+module.exports = { sendPasscodeResetEmail, sendCertificateEmail };
+
+async function sendCertificateEmail(toEmail, memberName, pdfBuffer) {
+  if (!resend) {
+    console.warn('RESEND_API_KEY is not set, skipping actual email send. Certificate was generated but not emailed.');
+    return { skipped: true };
+  }
+  return resend.emails.send({
+    from: FROM,
+    to: toEmail,
+    subject: 'Your GSBS Certificate of Competence',
+    html: `
+      <p>Dear ${memberName},</p>
+      <p>Congratulations, your GSBS Certificate of Competence is attached to this email.</p>
+      <p>Please keep a copy for your records.</p>
+      <p>Ghanaian Society for Biomedical Scientists</p>
+    `,
+    attachments: [
+      {
+        filename: 'GSBS_Certificate_of_Competence.pdf',
+        content: pdfBuffer.toString('base64'),
+      },
+    ],
+  });
+}

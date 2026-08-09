@@ -2,6 +2,8 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const pool = require('../db/pool');
+const { generateCertificatePdf } = require('./certificate');
+const { sendCertificateEmail } = require('./email');
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -176,6 +178,95 @@ router.post('/applications/:id/reject', requireAdminAuth, async (req, res) => {
     res.status(500).json({ error: 'Could not reject application.' });
   } finally {
     client.release();
+  }
+});
+
+// --- Active members, with their latest credential (for the admin's Members tab) ---
+router.get('/members', requireAdminAuth, async (req, res) => {
+  try {
+    const r = await pool.query(`
+      SELECT m.id, m.name, m.email, m.type, m.status,
+             c.label AS "credentialLabel", c.cert_no AS "certNo", c.issued, c.expires
+      FROM members m
+      LEFT JOIN LATERAL (
+        SELECT * FROM credentials WHERE member_id = m.id ORDER BY issued DESC LIMIT 1
+      ) c ON true
+      WHERE m.status = 'active'
+      ORDER BY m.name ASC
+    `);
+    res.json({ members: r.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Could not load members.' });
+  }
+});
+
+async function loadMemberAndCredential(memberId) {
+  const memberRes = await pool.query('SELECT * FROM members WHERE id = $1', [memberId]);
+  if (!memberRes.rows.length) return null;
+  const member = memberRes.rows[0];
+  const credRes = await pool.query('SELECT * FROM credentials WHERE member_id = $1 ORDER BY issued DESC LIMIT 1', [memberId]);
+  const credential = credRes.rows[0] || null;
+  return { member, credential };
+}
+
+function formatCertDate(d) {
+  return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+// --- Download a member's certificate as a PDF -------------------------------
+router.get('/members/:id/certificate', requireAdminAuth, async (req, res) => {
+  try {
+    const loaded = await loadMemberAndCredential(req.params.id);
+    if (!loaded) return res.status(404).json({ error: 'Member not found.' });
+    if (!loaded.credential) return res.status(400).json({ error: 'This member has no issued credential yet.' });
+
+    const pdfBuffer = await generateCertificatePdf({
+      name: loaded.member.name,
+      credentialTitle: loaded.credential.label,
+      discipline: 'Biomedical Sciences',
+      dateIssued: formatCertDate(loaded.credential.issued),
+      memberId: loaded.member.id,
+      certNo: loaded.credential.cert_no,
+    });
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="GSBS_Certificate_${loaded.member.id}.pdf"`);
+    res.send(pdfBuffer);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Could not generate certificate.' });
+  }
+});
+
+// --- Email a member's certificate to them -----------------------------------
+router.post('/members/:id/send-certificate', requireAdminAuth, async (req, res) => {
+  try {
+    const loaded = await loadMemberAndCredential(req.params.id);
+    if (!loaded) return res.status(404).json({ error: 'Member not found.' });
+    if (!loaded.credential) return res.status(400).json({ error: 'This member has no issued credential yet.' });
+
+    const pdfBuffer = await generateCertificatePdf({
+      name: loaded.member.name,
+      credentialTitle: loaded.credential.label,
+      discipline: 'Biomedical Sciences',
+      dateIssued: formatCertDate(loaded.credential.issued),
+      memberId: loaded.member.id,
+      certNo: loaded.credential.cert_no,
+    });
+
+    const result = await sendCertificateEmail(loaded.member.email, loaded.member.name, pdfBuffer);
+    await pool.query(
+      `INSERT INTO member_updates (member_id, text) VALUES ($1, 'Certificate emailed to the address on file.')`,
+      [loaded.member.id]
+    );
+    if (result && result.skipped) {
+      return res.json({ message: 'Certificate generated, but no email was sent because RESEND_API_KEY is not configured yet.' });
+    }
+    res.json({ message: 'Certificate emailed to the member.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Could not send certificate.' });
   }
 });
 

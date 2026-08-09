@@ -240,10 +240,6 @@
         <div><h3 style="margin-bottom:2px;">Title Position Statement</h3><p class="hint" style="margin:0;">GSBS's position on the use of the title "Biomedical Scientist" / "Clinical Biomedical Scientist."</p></div>
         <a class="btn btn-ghost btn-sm" href="#" onclick="showDocument('title'); return false;">View document</a>
       </div></li>
-      <li class="join-row"><div style="display:flex; justify-content:space-between; align-items:center; padding:16px 4px;">
-        <div><h3 style="margin-bottom:2px;">Practicum Comparison Exhibit</h3><p class="hint" style="margin:0;">Supporting evidence for the Society's licensure engagement with AHPC.</p></div>
-        <a class="btn btn-ghost btn-sm" href="#" onclick="alert('Internal document, not for public posting until finalized.'); return false;">Restricted</a>
-      </div></li>
     </ul>
   </section>
 
@@ -1205,9 +1201,12 @@ async function adminUnlock(){
 
 async function renderAdmin(){
   let applications = [];
+  let members = [];
   try{
     const result = await api('/api/admin/applications', { method: 'GET' });
     applications = result.applications;
+    const memberResult = await api('/api/admin/members', { method: 'GET' });
+    members = memberResult.members;
   }catch(e){
     adminToken = null;
     localStorage.removeItem('gsbs_admin_token');
@@ -1230,12 +1229,37 @@ async function renderAdmin(){
         <button class="btn btn-ghost btn-sm" onclick="rejectApp('${a.id}')">Reject</button>
       </td>
     </tr>`;}).join('');
+  const memberRows = members.map(m=>{
+    const hasCred = !!m.credentialLabel;
+    return `
+    <tr>
+      <td>${m.name}<br><span class="hint">${m.id}</span></td>
+      <td>${m.type}</td>
+      <td>${hasCred ? m.credentialLabel : '<span class="hint">No credential issued</span>'}</td>
+      <td>${hasCred ? (m.certNo || '\u2014') : ''}</td>
+      <td>
+        ${hasCred ? `
+          <a class="btn btn-ghost btn-sm" href="${API_BASE}/api/admin/members/${m.id}/certificate" target="_blank" onclick="downloadCertWithAuth(event, '${m.id}')">Download</a>
+          <button class="btn btn-primary btn-sm" onclick="sendCertificate('${m.id}')">Send by email</button>
+        ` : '<span class="hint">Not eligible yet</span>'}
+      </td>
+    </tr>`;}).join('');
+
   document.getElementById('adminContent').innerHTML = `
     <h2 style="font-size:18px;">Pending applications (${applications.length})</h2>
     <table class="ledger">
       <tr><th>App ID</th><th>Applicant</th><th>Type</th><th>Membership</th><th>Files</th><th>Submitted</th><th>Action</th></tr>
       ${rows || '<tr><td colspan="7" class="hint">Queue is empty</td></tr>'}
     </table>
+
+    <h2 style="font-size:18px; margin-top:30px;">Members (${members.length})</h2>
+    <p class="hint" style="margin-bottom:10px;">Once an applicant is approved, their certificate is generated automatically with their real name and details. Download a copy, or send it directly to the member's email on file.</p>
+    <table class="ledger">
+      <tr><th>Member</th><th>Class</th><th>Credential</th><th>Certificate No.</th><th>Action</th></tr>
+      ${memberRows || '<tr><td colspan="5" class="hint">No active members yet</td></tr>'}
+    </table>
+    <div id="sendCertMsg"></div>
+
     <div class="panel" style="margin-top:24px;">
       <h3 style="font-size:15px; margin-bottom:10px;">Change admin passcode</h3>
       <div class="field">
@@ -1290,6 +1314,37 @@ async function rejectApp(appId){
     renderAdmin();
     renderHomeStats();
   }catch(e){ alert(e.message); }
+}
+
+async function downloadCertWithAuth(event, memberId){
+  event.preventDefault();
+  try{
+    const res = await fetch(`${API_BASE}/api/admin/members/${memberId}/certificate`, {
+      headers: { 'Authorization': 'Bearer ' + adminToken },
+    });
+    if(!res.ok){ const data = await res.json().catch(()=>({})); throw new Error(data.error || 'Could not download certificate.'); }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `GSBS_Certificate_${memberId}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }catch(e){
+    alert(e.message);
+  }
+}
+
+async function sendCertificate(memberId){
+  const msgEl = document.getElementById('sendCertMsg');
+  try{
+    const result = await api(`/api/admin/members/${memberId}/send-certificate`, { method: 'POST', body: {} });
+    msgEl.innerHTML = `<div class="banner" style="margin-top:10px;">${result.message}</div>`;
+  }catch(e){
+    msgEl.innerHTML = `<div class="banner warn" style="margin-top:10px;">${e.message}</div>`;
+  }
 }
 </script>
 </body>
