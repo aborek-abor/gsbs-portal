@@ -6,6 +6,7 @@ const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs');
 const pool = require('../db/pool');
+const { duesFor, duesAmountMinorUnits, isPaystackConfigured, initializeTransaction } = require('./paystack');
 const { sendPasscodeResetEmail } = require('./email');
 
 const router = express.Router();
@@ -75,14 +76,46 @@ router.post('/apply', upload.array('files', 5), async (req, res) => {
 
     const appIdRes = await client.query("SELECT 'APP-' || lpad(nextval('application_id_seq')::text, 6, '0') AS id");
     const appId = appIdRes.rows[0].id;
+    const dues = duesFor(type);
+    const duesMinor = duesAmountMinorUnits(type);
+    const waived = dues.amount <= 0;
     await client.query(
-      `INSERT INTO applications (id, member_id, applicant_name, email, type, membership_type, institution, year, docs, files)
-       VALUES ($1,$2,$3,$4,'new',$5,$6,$7,$8,$9)`,
-      [appId, memberId, name, email, type, institution || null, year || null, docs || null, JSON.stringify(files)]
+      `INSERT INTO applications (id, member_id, applicant_name, email, type, membership_type, institution, year, docs, files, dues_amount_pesewas, dues_currency, payment_status, payment_method, paid_at, payment_reference)
+       VALUES ($1,$2,$3,$4,'new',$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)`,
+      [appId, memberId, name, email, type, institution || null, year || null, docs || null, JSON.stringify(files), duesMinor, dues.currency,
+       waived ? 'paid' : 'unpaid', waived ? 'waived' : null, waived ? new Date() : null, waived ? null : appId]
     );
     await client.query('COMMIT');
 
-    res.json({ memberId, applicationId: appId, message: 'Application submitted. Save your Member ID and passcode to check status.' });
+    let paymentUrl = null;
+    let paymentNote = null;
+    if (!waived) {
+      if (isPaystackConfigured()) {
+        try {
+          const appUrl = process.env.APP_URL || `${req.protocol}://${req.get('host')}`;
+          const tx = await initializeTransaction({
+            email,
+            amountMinorUnits: duesMinor,
+            currency: dues.currency,
+            reference: appId,
+            callbackUrl: `${appUrl}/api/payments/callback`,
+          });
+          paymentUrl = tx.authorization_url;
+        } catch (payErr) {
+          console.error('Could not start Paystack transaction:', payErr.message);
+          paymentNote = 'Your application was saved, but online payment could not be started right now. Contact the Society to arrange payment.';
+        }
+      } else {
+        paymentNote = 'Online payment is not yet enabled. Your application is saved as pending; the Society will contact you about dues.';
+      }
+    }
+
+    res.json({
+      memberId, applicationId: appId,
+      message: 'Application submitted. Save your Member ID and passcode to check status.',
+      duesAmount: dues.amount, duesCurrency: dues.currency,
+      paymentUrl, paymentNote,
+    });
   } catch (err) {
     await client.query('ROLLBACK');
     console.error(err);

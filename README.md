@@ -102,6 +102,34 @@ been set yet, you'll be prompted to create one right there, choose something
 real, not a placeholder. This is stored as a bcrypt hash in the database,
 never in plain text anywhere.
 
+## Setting up dues collection (Paystack)
+
+Applicants can pay their membership dues online via Paystack (cards and
+Mobile Money) at the time they apply. The Membership Admissions Committee
+cannot approve an application until it's marked paid, either automatically
+through Paystack, or manually if someone pays by cash or bank transfer.
+
+1. Sign up at [paystack.com](https://paystack.com). You do **not** need to
+   finish business verification to start testing, Paystack gives you test
+   keys immediately.
+2. In the Paystack dashboard, go to **Settings → API Keys & Webhooks**.
+   Copy your **Test Secret Key** (starts with `sk_test_`).
+3. In Railway, add a variable: `PAYSTACK_SECRET_KEY` with that value.
+4. Still on that Paystack page, add a webhook URL:
+   `https://<your-live-site>/api/payments/webhook`
+   This is how Paystack confirms a payment really happened, independent of
+   whatever the applicant's browser reports.
+5. Test with Paystack's [published test card and Mobile Money
+   numbers](https://paystack.com/docs/payments/test-payments/) before
+   switching to live keys.
+6. Once you're ready to accept real payments, replace `PAYSTACK_SECRET_KEY`
+   with your **Live Secret Key** (starts with `sk_live_`) instead, this
+   requires completing Paystack's business verification first.
+
+Dues amounts by membership type are set in `routes/paystack.js` (the
+`DUES_GHS` object near the top). Edit the figures there and redeploy to
+change pricing.
+
 ## A few things worth knowing before real applicants use this
 
 - **File uploads are stored on local disk** (`/uploads`), which works, but

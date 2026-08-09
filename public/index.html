@@ -400,6 +400,12 @@
     </div>
   </section>
 
+  <!-- PAYMENT RESULT (reached after returning from Paystack checkout) -->
+  <section class="view" id="view-payment-result">
+    <p class="eyebrow">Membership dues</p>
+    <div id="paymentResultContent"></div>
+  </section>
+
   <!-- PORTAL (personalized) -->
   <section class="view" id="view-portal">
     <div id="portalContent"></div>
@@ -443,6 +449,7 @@ async function api(path, opts = {}) {
 }
 
 let pendingResetToken = null, pendingResetId = null;
+let pendingPaymentStatus = null;
 function checkDirectRoute(){
   const hash = window.location.hash;
   if(hash === '#admin'){ setView('admin'); return; }
@@ -451,6 +458,11 @@ function checkDirectRoute(){
     pendingResetToken = params.get('token');
     pendingResetId = params.get('id');
     setView('reset');
+  }
+  if(hash.startsWith('#payment-result')){
+    const params = new URLSearchParams(hash.split('?')[1] || '');
+    pendingPaymentStatus = params.get('status');
+    setView('payment-result');
   }
 }
 window.addEventListener('hashchange', checkDirectRoute);
@@ -466,6 +478,7 @@ function setView(name){
   if(name==='home') renderHomeStats();
   if(name==='about') renderAccordionContainer('aboutList');
   if(name==='admin') renderAdminGate();
+  if(name==='payment-result') renderPaymentResult();
 }
 document.getElementById('mainNav').addEventListener('click', e=>{
   const btn = e.target.closest('button[data-view]');
@@ -946,12 +959,19 @@ async function submitApplication(e){
   try{
     const result = await api('/api/apply', { method: 'POST', body: fd, noAuth: true });
     document.getElementById('applyForm').reset();
+    const dues = typeof result.duesAmount === 'number' ? result.duesAmount : null;
+    const duesCurrency = result.duesCurrency || 'GHS';
+    const payButton = result.paymentUrl
+      ? `<button class="btn btn-primary btn-block" style="margin-top:14px;" onclick="window.location.href='${result.paymentUrl}'">Pay dues now (${duesCurrency} ${dues})</button>
+         <p class="hint" style="margin-top:6px;">You'll be taken to Paystack's secure checkout. Your application will move to committee review once payment is confirmed.</p>`
+      : (result.paymentNote ? `<p class="hint" style="margin-top:10px;">${result.paymentNote}</p>` : '');
     out.innerHTML = `
       <div class="verify-result">
         <h3>Application submitted</h3>
         <p style="font-size:13.5px;">Save these credentials to check your status in the Member Portal:</p>
         <p><span class="id-badge">${result.memberId}</span> &nbsp; Passcode: <span class="id-badge">${passcode}</span></p>
         <p class="hint">Your application is now Pending review${files.length ? ` (${files.length} file${files.length>1?'s':''} attached)` : ''}. You'll see updates in your portal as the Admissions Committee processes it.</p>
+        ${payButton}
       </div>`;
     renderHomeStats();
   }catch(err){
@@ -1001,6 +1021,22 @@ async function doVerify(){
   }catch(err){
     out.innerHTML = `<div class="banner warn">${err.message}</div>`;
   }
+}
+
+function renderPaymentResult(){
+  const el = document.getElementById('paymentResultContent');
+  const messages = {
+    success: { title: 'Payment received', body: 'Thank you, your dues have been received. Your application is now with the Membership Admissions Committee for review.', tone: 'ok' },
+    failed: { title: 'Payment not completed', body: 'It looks like the payment didn\u2019t go through. You can try again from your member portal once you log in, or contact the Society for help.', tone: 'warn' },
+    error: { title: 'Something went wrong', body: 'We couldn\u2019t confirm your payment status right now. If money left your account, don\u2019t worry, it will still be matched to your application once confirmed; otherwise, please try again.', tone: 'warn' },
+  };
+  const m = messages[pendingPaymentStatus] || messages.error;
+  el.innerHTML = `
+    <div class="verify-result">
+      <h3>${m.title}</h3>
+      <p>${m.body}</p>
+      <button class="btn btn-primary" style="margin-top:10px;" onclick="setView('login');">Go to member login</button>
+    </div>`;
 }
 
 async function doLogin(){
@@ -1216,16 +1252,24 @@ async function renderAdmin(){
   const rows = applications.map(a=>{
     const files = a.files || [];
     const fileList = files.length ? files.map(f=>`<div class="hint">${f}</div>`).join('') : '<span class="hint">None</span>';
+    const duesAmount = a.duesAmountPesewas != null ? (a.duesAmountPesewas / 100).toFixed(2) : null;
+    const duesCurrency = a.duesCurrency || 'GHS';
+    const paid = a.paymentStatus === 'paid';
+    const paymentCell = paid
+      ? `<span class="status-chip status-active">Paid${a.paymentMethod === 'manual' ? ' (manual)' : ''}</span>`
+      : `<span class="status-chip status-pending">Unpaid${duesAmount ? ` \u00b7 ${duesCurrency} ${duesAmount}` : ''}</span>
+         <br><button class="btn btn-ghost btn-sm" style="margin-top:4px;" onclick="markPaid('${a.id}')">Mark as paid</button>`;
     return `
     <tr>
       <td>${a.id}</td>
       <td>${a.applicantName}<br><span class="hint">${a.memberId}</span></td>
       <td>${a.type}</td>
       <td>${a.membershipType||''}</td>
+      <td>${paymentCell}</td>
       <td>${fileList}</td>
       <td>${String(a.submitted).slice(0,10)}</td>
       <td>
-        <button class="btn btn-primary btn-sm" onclick="approveApp('${a.id}')">Approve</button>
+        <button class="btn btn-primary btn-sm" onclick="approveApp('${a.id}')" ${paid ? '' : 'title="Dues must be paid first"'}>Approve</button>
         <button class="btn btn-ghost btn-sm" onclick="rejectApp('${a.id}')">Reject</button>
       </td>
     </tr>`;}).join('');
@@ -1248,8 +1292,8 @@ async function renderAdmin(){
   document.getElementById('adminContent').innerHTML = `
     <h2 style="font-size:18px;">Pending applications (${applications.length})</h2>
     <table class="ledger">
-      <tr><th>App ID</th><th>Applicant</th><th>Type</th><th>Membership</th><th>Files</th><th>Submitted</th><th>Action</th></tr>
-      ${rows || '<tr><td colspan="7" class="hint">Queue is empty</td></tr>'}
+      <tr><th>App ID</th><th>Applicant</th><th>Type</th><th>Membership</th><th>Payment</th><th>Files</th><th>Submitted</th><th>Action</th></tr>
+      ${rows || '<tr><td colspan="8" class="hint">Queue is empty</td></tr>'}
     </table>
 
     <h2 style="font-size:18px; margin-top:30px;">Members (${members.length})</h2>
@@ -1313,6 +1357,13 @@ async function rejectApp(appId){
     await api(`/api/admin/applications/${appId}/reject`, { method: 'POST', body: {} });
     renderAdmin();
     renderHomeStats();
+  }catch(e){ alert(e.message); }
+}
+
+async function markPaid(appId){
+  try{
+    await api(`/api/admin/applications/${appId}/mark-paid`, { method: 'POST', body: {} });
+    renderAdmin();
   }catch(e){ alert(e.message); }
 }
 

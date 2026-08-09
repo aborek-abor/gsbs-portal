@@ -92,7 +92,9 @@ router.get('/applications', requireAdminAuth, async (req, res) => {
   try {
     const r = await pool.query(
       `SELECT id, member_id AS "memberId", applicant_name AS "applicantName", email, type,
-              membership_type AS "membershipType", files, submitted, status
+              membership_type AS "membershipType", files, submitted, status,
+              dues_amount_pesewas AS "duesAmountPesewas", dues_currency AS "duesCurrency",
+              payment_status AS "paymentStatus", payment_method AS "paymentMethod"
        FROM applications WHERE status = 'pending' ORDER BY submitted ASC`
     );
     res.json({ applications: r.rows });
@@ -120,6 +122,10 @@ router.post('/applications/:id/approve', requireAdminAuth, async (req, res) => {
     if (!appRes.rows.length) { await client.query('ROLLBACK'); return res.status(404).json({ error: 'Application not found.' }); }
     const app = appRes.rows[0];
     if (app.status !== 'pending') { await client.query('ROLLBACK'); return res.status(400).json({ error: 'Application already decided.' }); }
+    if (app.payment_status !== 'paid') {
+      await client.query('ROLLBACK');
+      return res.status(400).json({ error: 'Dues have not been paid yet for this application. Use "Mark as paid" first if they paid outside the online system.' });
+    }
 
     await client.query(`UPDATE applications SET status = 'approved', decided_at = now() WHERE id = $1`, [app.id]);
 
@@ -267,6 +273,31 @@ router.post('/members/:id/send-certificate', requireAdminAuth, async (req, res) 
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Could not send certificate.' });
+  }
+});
+
+// --- Manually record a payment made outside the online system (cash, bank
+// transfer, etc.). Requires the admin to explicitly confirm, since this
+// bypasses Paystack's own verification. ------------------------------------
+router.post('/applications/:id/mark-paid', requireAdminAuth, async (req, res) => {
+  try {
+    const r = await pool.query('SELECT * FROM applications WHERE id = $1', [req.params.id]);
+    if (!r.rows.length) return res.status(404).json({ error: 'Application not found.' });
+    const app = r.rows[0];
+    if (app.payment_status === 'paid') return res.status(400).json({ error: 'Already marked as paid.' });
+
+    await pool.query(
+      `UPDATE applications SET payment_status = 'paid', payment_method = 'manual', paid_at = now() WHERE id = $1`,
+      [app.id]
+    );
+    await pool.query(
+      `INSERT INTO member_updates (member_id, text) VALUES ($1, 'Dues recorded as received outside the online payment system.')`,
+      [app.member_id]
+    );
+    res.json({ message: 'Marked as paid.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Could not update payment status.' });
   }
 });
 
