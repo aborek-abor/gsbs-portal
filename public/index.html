@@ -366,6 +366,41 @@
       </div>
       <button class="btn btn-primary btn-block" onclick="doLogin()">Log in</button>
       <div id="loginError"></div>
+      <p class="hint" style="margin-top:10px;"><a href="#" onclick="setView('forgot');return false;">Forgot your passcode?</a></p>
+    </div>
+  </section>
+
+  <!-- FORGOT PASSCODE -->
+  <section class="view" id="view-forgot">
+    <p class="eyebrow">Member portal</p>
+    <h1 style="font-size:28px;">Reset your passcode</h1>
+    <p class="lede">Enter your Member ID or the email you applied with. If it matches an account, we'll email a reset link to the address on file.</p>
+    <div class="panel">
+      <div class="field">
+        <label>Member ID or email</label>
+        <input id="forgotInput" placeholder="GSBS-000123 or you@example.com">
+      </div>
+      <button class="btn btn-primary btn-block" onclick="doForgotPasscode()">Send reset link</button>
+      <div id="forgotMsg"></div>
+      <p class="hint" style="margin-top:10px;"><a href="#" onclick="setView('login');return false;">Back to log in</a></p>
+    </div>
+  </section>
+
+  <!-- RESET PASSCODE (reached via the emailed link) -->
+  <section class="view" id="view-reset">
+    <p class="eyebrow">Member portal</p>
+    <h1 style="font-size:28px;">Set a new passcode</h1>
+    <div class="panel">
+      <div class="field">
+        <label>New passcode</label>
+        <input id="resetNewPass" type="password" placeholder="At least 6 characters">
+      </div>
+      <div class="field">
+        <label>Confirm new passcode</label>
+        <input id="resetConfirmPass" type="password">
+      </div>
+      <button class="btn btn-primary btn-block" onclick="doResetPasscode()">Set new passcode</button>
+      <div id="resetMsg"></div>
     </div>
   </section>
 
@@ -375,10 +410,10 @@
   </section>
 
   <!-- ADMIN -->
-<section class="view" id="view-admin">
-  <h1 style="font-size:28px;">Admissions queue</h1>
-  <p class="lede">Reviews and decides membership applications, mapping to the Membership Admissions Committee's role under the Bylaws.</p>
-  <div class="panel" id="adminGate">
+  <section class="view" id="view-admin">
+    <h1 style="font-size:28px;">Admissions queue</h1>
+    <p class="lede">Reviews and decides membership applications, mapping to the Membership Admissions Committee's role under the Bylaws.</p>
+    <div class="panel" id="adminGate">
       <div id="adminGateBody"></div>
     </div>
     <div id="adminContent" style="display:none;"></div>
@@ -411,8 +446,16 @@ async function api(path, opts = {}) {
   return data;
 }
 
+let pendingResetToken = null, pendingResetId = null;
 function checkDirectRoute(){
-  if(window.location.hash === '#admin'){ setView('admin'); }
+  const hash = window.location.hash;
+  if(hash === '#admin'){ setView('admin'); return; }
+  if(hash.startsWith('#reset?')){
+    const params = new URLSearchParams(hash.slice('#reset?'.length));
+    pendingResetToken = params.get('token');
+    pendingResetId = params.get('id');
+    setView('reset');
+  }
 }
 window.addEventListener('hashchange', checkDirectRoute);
 checkDirectRoute();
@@ -976,6 +1019,50 @@ async function doLogin(){
     setView('portal');
   }catch(e){
     err.innerHTML = '<p class="hint" style="color:var(--clay);">Member ID or passcode not recognized.</p>';
+  }
+}
+
+async function doForgotPasscode(){
+  const input = document.getElementById('forgotInput').value.trim();
+  const msgEl = document.getElementById('forgotMsg');
+  const isEmail = input.includes('@');
+  try{
+    const result = await api('/api/forgot-passcode', {
+      method: 'POST', noAuth: true,
+      body: isEmail ? { email: input } : { memberId: input.toUpperCase() },
+    });
+    msgEl.innerHTML = `<p class="hint" style="color:var(--green);">${result.message}</p>`;
+  }catch(e){
+    msgEl.innerHTML = `<p class="hint" style="color:var(--clay);">${e.message}</p>`;
+  }
+}
+
+async function doResetPasscode(){
+  const next = document.getElementById('resetNewPass').value.trim();
+  const confirm = document.getElementById('resetConfirmPass').value.trim();
+  const msgEl = document.getElementById('resetMsg');
+  if(!pendingResetToken || !pendingResetId){
+    msgEl.innerHTML = `<p class="hint" style="color:var(--clay);">This reset link looks incomplete. Request a new one.</p>`;
+    return;
+  }
+  if(next.length < 6){
+    msgEl.innerHTML = `<p class="hint" style="color:var(--clay);">Passcode must be at least 6 characters.</p>`;
+    return;
+  }
+  if(next !== confirm){
+    msgEl.innerHTML = `<p class="hint" style="color:var(--clay);">Passcode and confirmation do not match.</p>`;
+    return;
+  }
+  try{
+    const result = await api('/api/reset-passcode', {
+      method: 'POST', noAuth: true,
+      body: { memberId: pendingResetId, token: pendingResetToken, newPasscode: next },
+    });
+    msgEl.innerHTML = `<p class="hint" style="color:var(--green);">${result.message}</p>`;
+    pendingResetToken = null; pendingResetId = null;
+    setTimeout(() => setView('login'), 1500);
+  }catch(e){
+    msgEl.innerHTML = `<p class="hint" style="color:var(--clay);">${e.message}</p>`;
   }
 }
 

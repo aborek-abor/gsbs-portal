@@ -59,6 +59,19 @@ CREATE SEQUENCE IF NOT EXISTS member_id_seq START 100;
 CREATE SEQUENCE IF NOT EXISTS application_id_seq START 1;
 CREATE SEQUENCE IF NOT EXISTS cert_no_seq START 1;
 
+-- Password reset tokens. We store a HASH of the token, never the token itself,
+-- same principle as passcodes: even a database leak shouldn't hand out usable
+-- reset links. Tokens are single-use and short-lived (checked in application code).
+CREATE TABLE IF NOT EXISTS password_resets (
+  id           SERIAL PRIMARY KEY,
+  member_id    TEXT NOT NULL REFERENCES members(id) ON DELETE CASCADE,
+  token_hash   TEXT NOT NULL,
+  expires_at   TIMESTAMPTZ NOT NULL,
+  used         BOOLEAN NOT NULL DEFAULT false,
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_password_resets_member ON password_resets (member_id);
+
 CREATE INDEX IF NOT EXISTS idx_members_name ON members (lower(name));
 CREATE INDEX IF NOT EXISTS idx_applications_status ON applications (status);
 CREATE INDEX IF NOT EXISTS idx_credentials_member ON credentials (member_id);
