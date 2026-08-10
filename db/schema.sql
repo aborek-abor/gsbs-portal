@@ -36,19 +36,21 @@ CREATE TABLE IF NOT EXISTS applications (
   year             TEXT,
   docs             TEXT,
   files            JSONB DEFAULT '[]'::jsonb,
-  decided_at       TIMESTAMPTZ,
-  dues_amount_pesewas  INTEGER,                    -- amount owed, in the smallest unit of dues_currency (not always pesewas, despite the name)
-  dues_currency        TEXT NOT NULL DEFAULT 'GHS', -- 'GHS' or 'USD'
-  payment_status       TEXT NOT NULL DEFAULT 'unpaid', -- unpaid / paid / waived
-  payment_reference    TEXT,                        -- Paystack transaction reference
-  payment_method       TEXT,                        -- 'paystack' or 'manual' (cash/bank transfer recorded by admin)
-  paid_at              TIMESTAMPTZ
+  decided_at       TIMESTAMPTZ
 );
-CREATE INDEX IF NOT EXISTS idx_applications_payment_ref ON applications (payment_reference);
 
--- Safe to re-run: only adds the column if an earlier deploy created this
--- table before dues_currency existed.
-ALTER TABLE applications ADD COLUMN IF NOT EXISTS dues_currency TEXT NOT NULL DEFAULT 'GHS';
+-- Every column below was added after the applications table first shipped.
+-- CREATE TABLE IF NOT EXISTS above is a no-op on a database that already had
+-- this table, so each of these needs its own explicit, idempotent ALTER to
+-- actually reach an existing live database, not just a brand new one.
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS dues_amount_pesewas INTEGER; -- amount owed, in the smallest unit of dues_currency (not always pesewas, despite the name)
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS dues_currency TEXT NOT NULL DEFAULT 'GHS'; -- 'GHS' or 'USD'
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS payment_status TEXT NOT NULL DEFAULT 'unpaid'; -- unpaid / paid / waived
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS payment_reference TEXT; -- Paystack transaction reference
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS payment_method TEXT; -- 'paystack' or 'manual' (cash/bank transfer recorded by admin)
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS paid_at TIMESTAMPTZ;
+
+CREATE INDEX IF NOT EXISTS idx_applications_payment_ref ON applications (payment_reference);
 
 CREATE TABLE IF NOT EXISTS member_updates (
   id          SERIAL PRIMARY KEY,
