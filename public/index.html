@@ -63,7 +63,7 @@
   p.lede{font-size:16.5px; color:var(--ink-soft); max-width:620px;}
 
   .hero{
-    display:grid; grid-template-columns:1.3fr 1fr; gap:40px; align-items:center;
+    display:block;
     padding-bottom:44px; border-bottom:1px solid var(--hairline); margin-bottom:44px;
   }
   .hero-panel{
@@ -207,12 +207,6 @@
           <button class="btn btn-primary" data-view="apply">Apply for membership</button>
           <button class="btn btn-ghost" data-view="verify">Verify a member</button>
         </div>
-      </div>
-      <div class="hero-panel">
-        <div class="eyebrow" style="margin-bottom:14px;">National register, live</div>
-        <div class="stat"><span>Active credentials</span><b id="statCreds">0</b></div>
-        <div class="stat"><span>Applications in review</span><b id="statPending">0</b></div>
-        <div class="stat"><span>Credential tiers</span><b>CCBS &middot; Specialist &middot; Clinical Scientist &middot; FGSBS</b></div>
       </div>
     </div>
 
@@ -496,11 +490,7 @@ document.querySelectorAll('button[data-view]').forEach(b=>{
 function todayStr(){ return new Date().toISOString().slice(0,10); }
 
 async function renderHomeStats(){
-  try{
-    const stats = await api('/api/stats', { noAuth: true });
-    document.getElementById('statCreds').textContent = stats.credentials;
-    document.getElementById('statPending').textContent = '\u2014';
-  }catch(e){ console.error(e); }
+  // The homepage no longer displays live register stats.
 }
 renderHomeStats();
 
