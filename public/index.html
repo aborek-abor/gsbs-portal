@@ -210,7 +210,6 @@
       </div>
       <div class="hero-panel">
         <div class="eyebrow" style="margin-bottom:14px;">National register, live</div>
-        <div class="stat"><span>Registered members</span><b id="statMembers">0</b></div>
         <div class="stat"><span>Active credentials</span><b id="statCreds">0</b></div>
         <div class="stat"><span>Applications in review</span><b id="statPending">0</b></div>
         <div class="stat"><span>Credential tiers</span><b>CCBS &middot; Specialist &middot; Clinical Scientist &middot; FGSBS</b></div>
@@ -499,7 +498,6 @@ function todayStr(){ return new Date().toISOString().slice(0,10); }
 async function renderHomeStats(){
   try{
     const stats = await api('/api/stats', { noAuth: true });
-    document.getElementById('statMembers').textContent = stats.members;
     document.getElementById('statCreds').textContent = stats.credentials;
     document.getElementById('statPending').textContent = '\u2014';
   }catch(e){ console.error(e); }

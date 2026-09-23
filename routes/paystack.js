@@ -9,9 +9,9 @@ const PAYSTACK_BASE = 'https://api.paystack.co';
 // smallest unit of whichever currency is used (pesewas for GHS, cents for
 // USD), both happen to be x100 of the whole-unit amount below.
 const DUES = {
-  Full: { amount: 100, currency: 'GHS' },
+  Full: { amount: 200, currency: 'GHS' },
   Student: { amount: 100, currency: 'GHS' },
-  Associate: { amount: 100, currency: 'GHS' },
+  Associate: { amount: 200, currency: 'GHS' },
   International: { amount: 35, currency: 'USD' },
   Honorary: { amount: 0, currency: 'GHS' },
 };
