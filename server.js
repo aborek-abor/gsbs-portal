@@ -7,6 +7,7 @@ const pool = require('./db/pool');
 const membersRoutes = require('./routes/members');
 const adminRoutes = require('./routes/admin');
 const paymentsRoutes = require('./routes/payments');
+const newsRoutes = require('./routes/news');
 const { verifyWebhookSignature, markApplicationPaid } = require('./routes/paystack');
 
 const app = express();
@@ -38,6 +39,7 @@ app.post('/api/payments/webhook', express.raw({ type: 'application/json' }), asy
 });
 
 app.use(express.json());
+app.use(newsRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.static(path.join(__dirname, 'public')));
 

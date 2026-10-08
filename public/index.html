@@ -174,6 +174,19 @@
     .field-row{grid-template-columns:1fr;}
     nav.site{display:none;}
   }
+  /* News */
+  .news-item{border-top:1px solid var(--hairline); padding:22px 4px;}
+  .news-item:last-child{border-bottom:1px solid var(--hairline);}
+  .news-meta{font-family:var(--mono); font-size:11px; letter-spacing:1.2px; text-transform:uppercase; color:var(--green); margin:0 0 8px;}
+  .news-item h3{font-size:21px; line-height:1.25; margin-bottom:8px;}
+  .news-item p{color:var(--ink-soft); font-size:14.5px; max-width:640px; margin:0 0 14px;}
+  .article{max-width:680px;}
+  .article h1{font-size:34px;}
+  .article .byline{font-size:13.5px; color:var(--ink-soft); margin:0 0 26px; padding-bottom:18px; border-bottom:1px solid var(--hairline);}
+  .article .body p{font-family:var(--serif); font-size:17.5px; line-height:1.7; color:var(--ink); margin:0 0 18px;}
+  .article .body h2{font-size:22px; margin:34px 0 12px;}
+  .article .article-tools{margin-top:34px; padding-top:18px; border-top:1px solid var(--hairline); display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+  @media (max-width:640px){ .article h1{font-size:27px;} .article .body p{font-size:16.5px;} }
 </style>
 </head>
 <body>
@@ -186,6 +199,7 @@
   <nav class="site" id="mainNav">
     <button data-view="home" class="active">Home</button>
     <button data-view="about">About</button>
+    <button data-view="news">News</button>
     <button data-view="join">Join</button>
     <button data-view="governance">Governance</button>
     <button data-view="verify">Verify a member</button>
@@ -234,6 +248,14 @@
         <a class="btn btn-ghost btn-sm" href="#" onclick="showDocument('title'); return false;">View document</a>
       </div></li>
     </ul>
+  </section>
+
+  <!-- NEWS -->
+  <section class="view" id="view-news">
+    <p class="eyebrow">From the Society</p>
+    <h1 style="font-size:28px;">News</h1>
+    <p class="lede">Statements, opinion and updates from the Ghanaian Society for Biomedical Scientists.</p>
+    <div id="newsList" style="margin-top:26px;"></div>
   </section>
 
   <!-- DOCUMENT VIEWER -->
@@ -449,6 +471,30 @@ async function api(path, opts = {}) {
 
 let pendingResetToken = null, pendingResetId = null;
 let pendingPaymentStatus = null;
+/* ---------- NEWS (articles live at real addresses: /news/<slug>) ---------- */
+function fmtNewsDate(d){
+  try{ return new Date(d+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}); }catch(e){ return d; }
+}
+function escNews(t){ return String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+async function renderNews(){
+  const el = document.getElementById('newsList');
+  if(!el) return;
+  el.innerHTML = '<p class="hint">Loading&hellip;</p>';
+  try{
+    const r = await fetch('/api/news');
+    const items = await r.json();
+    el.innerHTML = items.length ? items.map(n=>`
+      <article class="news-item">
+        <p class="news-meta">${escNews(n.category)} &middot; ${escNews(fmtNewsDate(n.date))}</p>
+        <h3><a href="/news/${escNews(n.id)}" style="color:inherit; text-decoration:none;">${escNews(n.title)}</a></h3>
+        <p>${escNews(n.summary)}</p>
+        <a class="btn btn-ghost btn-sm" href="/news/${escNews(n.id)}">Read article</a>
+      </article>`).join('') : '<p class="hint">No news yet.</p>';
+  }catch(e){
+    el.innerHTML = '<p class="hint">News could not be loaded. <a href="/news">Open the News page</a>.</p>';
+  }
+}
+
 function checkDirectRoute(){
   const hash = window.location.hash;
   if(hash === '#admin'){ setView('admin'); return; }
@@ -458,6 +504,9 @@ function checkDirectRoute(){
     pendingResetId = params.get('id');
     setView('reset');
   }
+  if(hash.startsWith('#news/')){ location.replace('/news/'+hash.slice(6)); return; }
+  { const v = hash.slice(1);
+    if(['home','about','news','join','governance','verify','apply','login'].includes(v)) setView(v); }
   if(hash.startsWith('#payment-result')){
     const params = new URLSearchParams(hash.split('?')[1] || '');
     pendingPaymentStatus = params.get('status');
@@ -466,6 +515,7 @@ function checkDirectRoute(){
 }
 window.addEventListener('hashchange', checkDirectRoute);
 checkDirectRoute();
+
 
 function views(){ return document.querySelectorAll('.view'); }
 function setView(name){
@@ -476,6 +526,7 @@ function setView(name){
   if(name==='verify') renderVerifyGate();
   if(name==='home') renderHomeStats();
   if(name==='about') renderAccordionContainer('aboutList');
+  if(name==='news') renderNews();
   if(name==='admin') renderAdminGate();
   if(name==='payment-result') renderPaymentResult();
 }
