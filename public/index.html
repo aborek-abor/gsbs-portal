@@ -1007,7 +1007,8 @@ async function submitApplication(e){
     const dues = typeof result.duesAmount === 'number' ? result.duesAmount : null;
     const duesCurrency = result.duesCurrency || 'GHS';
     const payButton = result.paymentUrl
-      ? `<button class="btn btn-primary btn-block" style="margin-top:14px;" onclick="window.location.href='${result.paymentUrl}'">Pay dues now (${duesCurrency} ${dues})</button>
+      ? `<a class="btn btn-primary btn-block" style="margin-top:14px;display:block;text-align:center;text-decoration:none;" href="${result.paymentUrl}" rel="noopener">Pay dues now (${duesCurrency} ${dues})</a>
+         <p class="hint" style="margin-top:6px;">If the button does not open, copy this link into your browser: <a href="${result.paymentUrl}" style="word-break:break-all;">${result.paymentUrl}</a></p>
          <p class="hint" style="margin-top:6px;">You'll be taken to Paystack's secure checkout. Your application will move to committee review once payment is confirmed.</p>`
       : (result.paymentNote ? `<p class="hint" style="margin-top:10px;">${result.paymentNote}</p>` : '');
     out.innerHTML = `
