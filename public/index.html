@@ -1007,8 +1007,8 @@ async function submitApplication(e){
     const dues = typeof result.duesAmount === 'number' ? result.duesAmount : null;
     const duesCurrency = result.duesCurrency || 'GHS';
     const payButton = result.paymentUrl
-      ? `<a class="btn btn-primary btn-block" style="margin-top:14px;display:block;text-align:center;text-decoration:none;" href="${result.paymentUrl}" rel="noopener">Pay dues now (${duesCurrency} ${dues})</a>
-         <p class="hint" style="margin-top:6px;">If the button does not open, copy this link into your browser: <a href="${result.paymentUrl}" style="word-break:break-all;">${result.paymentUrl}</a></p>
+      ? `<button type="button" id="payNowBtn" class="btn btn-primary btn-block" style="margin-top:14px;position:relative;z-index:5;pointer-events:auto;cursor:pointer;" data-url="${result.paymentUrl}">Pay dues now (${duesCurrency} ${dues})</button>
+         <p class="hint" style="margin-top:6px;"><a href="${result.paymentUrl}" target="_blank" rel="noopener" style="font-weight:600;">Open payment page in a new tab</a><br>Or copy this link into your browser: <span style="word-break:break-all;user-select:all;">${result.paymentUrl}</span></p>
          <p class="hint" style="margin-top:6px;">You'll be taken to Paystack's secure checkout. Your application will move to committee review once payment is confirmed.</p>`
       : (result.paymentNote ? `<p class="hint" style="margin-top:10px;">${result.paymentNote}</p>` : '');
     out.innerHTML = `
@@ -1019,6 +1019,14 @@ async function submitApplication(e){
         <p class="hint">Your application is now Pending review${files.length ? ` (${files.length} file${files.length>1?'s':''} attached)` : ''}. You'll see updates in your portal as the Admissions Committee processes it.</p>
         ${payButton}
       </div>`;
+    const payBtn = document.getElementById('payNowBtn');
+    if(payBtn){
+      payBtn.addEventListener('click', function(){
+        const u = payBtn.getAttribute('data-url');
+        try{ window.location.assign(u); }catch(e){ window.open(u,'_blank','noopener'); }
+        setTimeout(function(){ if(document.visibilityState==='visible'){ window.open(u,'_blank','noopener'); } }, 1500);
+      });
+    }
     renderHomeStats();
   }catch(err){
     out.innerHTML = `<div class="banner warn">${err.message}</div>`;
