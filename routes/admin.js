@@ -104,6 +104,31 @@ router.get('/applications', requireAdminAuth, async (req, res) => {
   }
 });
 
+// --- Full detail for one application (everything the applicant filled in) -------
+router.get('/applications/:id', requireAdminAuth, async (req, res) => {
+  try {
+    const r = await pool.query(
+      `SELECT a.id, a.member_id AS "memberId", a.applicant_name AS "applicantName", a.email,
+              m.phone, a.type, a.membership_type AS "membershipType", a.institution, a.year, a.docs,
+              a.submitted, a.status, a.decided_at AS "decidedAt",
+              a.dues_amount_pesewas AS "duesAmountPesewas", a.dues_currency AS "duesCurrency",
+              a.payment_status AS "paymentStatus", a.payment_method AS "paymentMethod", a.paid_at AS "paidAt",
+              m.status AS "memberStatus", m.joined
+       FROM applications a LEFT JOIN members m ON m.id = a.member_id WHERE a.id = $1`,
+      [req.params.id]
+    );
+    if (!r.rows.length) return res.status(404).json({ error: 'Application not found.' });
+    const f = await pool.query(
+      'SELECT filename, mime, octet_length(data) AS size FROM application_files WHERE application_id = $1 ORDER BY id',
+      [req.params.id]
+    );
+    res.json({ application: r.rows[0], files: f.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Could not load application.' });
+  }
+});
+
 // --- View an uploaded application document (admin only) -----------------------
 router.get('/applications/:id/files/:name', requireAdminAuth, async (req, res) => {
   try {

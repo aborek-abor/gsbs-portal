@@ -1316,7 +1316,7 @@ async function renderAdmin(){
     return `
     <tr>
       <td>${a.id}</td>
-      <td>${a.applicantName}<br><span class="hint">${a.memberId}</span></td>
+      <td><a href="#" onclick="return viewApplication('${a.id}')"><strong>${escNews(a.applicantName)}</strong></a><br><span class="hint">${a.memberId} \u00b7 click to view details</span></td>
       <td>${a.type}</td>
       <td>${a.membershipType||''}</td>
       <td>${paymentCell}</td>
@@ -1344,6 +1344,7 @@ async function renderAdmin(){
     </tr>`;}).join('');
 
   document.getElementById('adminContent').innerHTML = `
+    <div id="appDetail"></div>
     <h2 style="font-size:18px;">Pending applications (${applications.length})</h2>
     <table class="ledger">
       <tr><th>App ID</th><th>Applicant</th><th>Type</th><th>Membership</th><th>Payment</th><th>Files</th><th>Submitted</th><th>Action</th></tr>
@@ -1419,6 +1420,50 @@ async function markPaid(appId){
     await api(`/api/admin/applications/${appId}/mark-paid`, { method: 'POST', body: {} });
     renderAdmin();
   }catch(e){ alert(e.message); }
+}
+
+function fmtSize(n){ n=Number(n)||0; return n>1048576 ? (n/1048576).toFixed(1)+' MB' : Math.max(1,Math.round(n/1024))+' KB'; }
+async function viewApplication(appId){
+  const box = document.getElementById('appDetail');
+  if(!box) return false;
+  box.innerHTML = '<p class="hint">Loading application...</p>';
+  box.scrollIntoView({behavior:'smooth', block:'start'});
+  try{
+    const { application: a, files } = await api('/api/admin/applications/' + encodeURIComponent(appId), { method: 'GET' });
+    const e = escNews;
+    const row = (k,v)=>`<tr><th style="width:190px; text-align:left;">${k}</th><td>${v ? e(v) : '<span class="hint">Not provided</span>'}</td></tr>`;
+    const amt = a.duesAmountPesewas != null ? `${a.duesCurrency} ${(a.duesAmountPesewas/100).toFixed(2)}` : '';
+    const fileHtml = files.length
+      ? files.map(f=>`<div style="margin:4px 0;"><a href="#" onclick="return openUploadedFile(event,'${e(a.id)}','${encodeURIComponent(f.filename)}')">${e(f.filename.replace(/^\d+-/,''))}</a> <span class="hint">(${fmtSize(f.size)})</span></div>`).join('')
+      : '<span class="hint">No stored files. Files uploaded before the database update cannot be recovered, ask the applicant to send them again.</span>';
+    const pending = a.status === 'pending';
+    box.innerHTML = `
+      <div class="panel" style="margin-bottom:24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h3 style="font-size:16px;">${e(a.applicantName)} <span class="hint">${e(a.id)} \u00b7 ${e(a.memberId)}</span></h3>
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('appDetail').innerHTML=''">Close</button>
+        </div>
+        <table class="ledger">
+          ${row('Full name', a.applicantName)}
+          ${row('Email', a.email)}
+          ${row('Phone', a.phone)}
+          ${row('Membership type', a.membershipType)}
+          ${row('Application type', a.type)}
+          ${row('Institution', a.institution)}
+          ${row('Year of graduation / study', a.year)}
+          ${row('Documents described', a.docs)}
+          ${row('Submitted', String(a.submitted).slice(0,10))}
+          ${row('Status', a.status)}
+          ${row('Dues', amt)}
+          ${row('Payment', a.paymentStatus + (a.paymentMethod ? ' (' + a.paymentMethod + ')' : ''))}
+          <tr><th style="text-align:left;">Uploaded files</th><td>${fileHtml}</td></tr>
+        </table>
+        ${pending ? `<div style="margin-top:12px;">
+          <button class="btn btn-primary btn-sm" onclick="approveApp('${e(a.id)}')">Approve</button>
+          <button class="btn btn-ghost btn-sm" onclick="rejectApp('${e(a.id)}')">Reject</button></div>` : ''}
+      </div>`;
+  }catch(err){ box.innerHTML = `<p class="hint">${escNews(err.message)}</p>`; }
+  return false;
 }
 
 async function openUploadedFile(event, appId, encName){
