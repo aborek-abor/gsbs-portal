@@ -132,11 +132,7 @@ change pricing.
 
 ## A few things worth knowing before real applicants use this
 
-- **File uploads are stored on local disk** (`/uploads`), which works, but
-  Railway's filesystem is not guaranteed to persist across redeploys. For
-  anything beyond a pilot, move file storage to a real object store (Railway
-  has an S3-compatible bucket add-on, or use AWS S3 directly) before relying
-  on uploaded documents long-term.
+- **File uploads are stored in Postgres** (`application_files`), so they survive redeploys and are only viewable by signed-in admins.
 - **Passcodes for applicants** are currently auto-generated 6-digit numbers
   shown once at submission time, same behavior as the prototype. Worth
   deciding whether that's the right UX for real members versus letting them

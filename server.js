@@ -40,7 +40,6 @@ app.post('/api/payments/webhook', express.raw({ type: 'application/json' }), asy
 
 app.use(express.json());
 app.use(newsRoutes);
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api', membersRoutes);

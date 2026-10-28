@@ -2,6 +2,41 @@
 // `id` becomes the web address: /news/<id>. `body` is trusted HTML.
 module.exports = [
   {
+    id: 'position-statement-title-biomedical-scientist',
+    category: 'Position Statement',
+    date: '2026-10-12',
+    author: 'Ghanaian Society for Biomedical Scientists',
+    role: 'Position statement of the Society',
+    title: 'Position Statement on the Use of the Title \u201cBiomedical Scientist\u201d / \u201cClinical Biomedical Scientist\u201d',
+    summary: 'Why GSBS defines \u201cClinical Biomedical Scientist\u201d as a specific, verifiable credential, how it relates to Medical Laboratory Science, and how international usage of the title compares.',
+    body: `
+      <h2>1. Purpose</h2>
+      <p>This statement explains why the Ghanaian Society for Biomedical Scientists (GSBS) defines &ldquo;Clinical Biomedical Scientist&rdquo; as a specific, verifiable professional credential, rather than a general descriptive term open to anyone working in a laboratory setting, and why GSBS's Constitution reserves this title, within the Society, for holders of that credential. It is written for members, prospective members, partner institutions, and colleagues in the Medical Laboratory Science (MLS) profession, and is intended to be read alongside, not instead of, GSBS's founding Constitution.</p>
+      <h2>2. What GSBS Means by &ldquo;Clinical Biomedical Scientist&rdquo;</h2>
+      <p>Within GSBS, &ldquo;Clinical Biomedical Scientist&rdquo; refers specifically to a graduate of an accredited Bachelor of Science programme in Biomedical Sciences whose training includes structured, supervised clinical and research practicums undertaken from the second year of study through graduation, in addition to coursework spanning core diagnostic laboratory sciences, molecular diagnostics, genomics, bioinformatics, cancer and molecular/cellular biology, drug discovery, and public health.</p>
+      <p>This is a description of a specific, documented training pathway, not a job title available to anyone who works in or near a medical laboratory. GSBS's certification system (the GSBS Board of Certification, described in the Society's Bylaws) further verifies this training through a supervised competency portfolio before conferring the credential formally.</p>
+      <h2>3. Why a Defined Title Matters</h2>
+      <p>Titles that describe professional training are only useful, to the public, to employers, and to the professionals who hold them, if they mean something specific and verifiable. Where a title is used loosely, by anyone with an adjacent qualification or role, it stops functioning as a signal of training and competency, to the disadvantage of the public and of every professional who actually holds the underlying qualification.</p>
+      <p>GSBS has observed that the title &ldquo;Biomedical Scientist&rdquo; is, in some Ghanaian hospital settings, used informally by Medical Laboratory Science (MLS) professionals, notwithstanding that MLS is a distinct, separately regulated profession in Ghana with its own accredited curriculum, internship structure, and licensing pathway through the Allied Health Professions Council (AHPC). GSBS's position is not that MLS professionals are unqualified or that their title use reflects bad faith, in many cases it likely reflects the absence, until now, of any Ghanaian body clearly defining and defending the term. GSBS's Constitution and this statement are intended to supply that definition going forward.</p>
+      <h2>4. Relationship to Medical Laboratory Science (MLS)</h2>
+      <p>GSBS recognizes Medical Laboratory Science as a distinct, legitimate, and independently regulated profession in Ghana, with its own accredited training pathway and AHPC-licensed scope of practice in routine clinical diagnostic laboratory testing. Nothing in this statement, or in GSBS's Constitution, should be read as a claim that Biomedical Sciences graduates are entitled to practice within MLS's licensed scope, or as a criticism of MLS training or practice.</p>
+      <p>GSBS's position is narrower and more specific: that &ldquo;Clinical Biomedical Scientist,&rdquo; as a title, denotes a particular academic and practicum pathway that is not the MLS pathway, and that conflating the two titles obscures a real difference in training that matters to patients, employers, and regulators alike, particularly as GSBS pursues a distinct statutory licensing pathway for Biomedical Sciences graduates, rather than seeking to be absorbed into or superimposed upon the existing MLS licensing framework.</p>
+      <p>An MLS professional who has obtained additional, verifiable specialized training or postgraduate qualification in a recognized Biomedical Science field, such as molecular diagnostics, genomics, cancer or molecular/cellular biology, bioinformatics, drug discovery, or translational medicine, beyond the standard MLS curriculum, may apply for GSBS Full Membership and use of the credential on the basis of that additional specialization, as set out in GSBS's Constitution and Bylaws.</p>
+      <h2>5. International Precedent and Terminology</h2>
+      <p>GSBS's approach to defining &ldquo;Clinical Biomedical Scientist&rdquo; as a portfolio-verified, competency-based credential follows the model of the UK's Institute of Biomedical Science (IBMS) and the Health and Care Professions Council (HCPC), under which &ldquo;Biomedical Scientist&rdquo; is a legally protected title requiring a specific accredited degree and a supervised registration training portfolio, not merely informal laboratory experience.</p>
+      <p>GSBS notes, for completeness, that international terminology in this field is not fully uniform, and that similar-sounding titles are not interchangeable. The International Federation of Biomedical Laboratory Science (IFBLS), the global federation of national laboratory science societies (founded in 1954 as the International Association of Medical Laboratory Technologists), uses &ldquo;Biomedical Laboratory Scientist&rdquo; as a term for laboratory practitioners, a category that in Ghana corresponds to the Medical Laboratory Science profession. &ldquo;Biomedical Scientist&rdquo; is a different title, denoting a graduate of a Biomedical Sciences degree programme. This is why GSBS uses the fuller term &ldquo;Clinical Biomedical Scientist,&rdquo; and defines it explicitly in this statement and in its Constitution, so that the plain words &ldquo;Biomedical Scientist&rdquo; are not confused with &ldquo;Biomedical Laboratory Scientist&rdquo; in the Ghanaian context.</p>
+      <h2>6. Summary</h2>
+      <ul>
+        <li>&ldquo;Clinical Biomedical Scientist,&rdquo; within GSBS, denotes a specific, verifiable academic and practicum pathway, currently associated with the University of Cape Coast's BSc Biomedical Sciences programme.</li>
+        <li>This is distinct from, and not a claim of superiority over, Medical Laboratory Science, which remains a separately regulated profession in Ghana.</li>
+        <li>MLS professionals may earn the GSBS credential through documented additional specialization, as set out in GSBS's Constitution.</li>
+        <li>International usage of similar titles varies; GSBS's definitions in this statement and its Constitution govern usage within the Society, in Ghana.</li>
+        <li>This position is offered in the interest of clarity and public trust, not as a criticism of any individual MLS professional or of the MLS profession as a whole.</li>
+      </ul>
+    
+`
+  },
+  {
     id: 'ghana-trained-her-biomedical-scientists',
     category: 'Opinion',
     date: '2026-10-08',

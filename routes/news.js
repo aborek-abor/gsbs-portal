@@ -62,7 +62,7 @@ ${extraHead || ''}
   </nav>
 </header>
 <main>${content}</main>
-<footer>&copy; ${new Date().getFullYear()} ${esc(SITE_NAME)}. Registered Company Limited by Guarantee, Ghana. Reg. No. CG0594200926.</footer>
+<footer>&copy; ${new Date().getFullYear()} ${esc(SITE_NAME)}. Registered Company Limited by Guarantee, Ghana. Reg. No. CG059420926.</footer>
 </body>
 </html>`;
 }

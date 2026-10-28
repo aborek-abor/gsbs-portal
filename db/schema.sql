@@ -88,3 +88,14 @@ CREATE INDEX IF NOT EXISTS idx_password_resets_member ON password_resets (member
 CREATE INDEX IF NOT EXISTS idx_members_name ON members (lower(name));
 CREATE INDEX IF NOT EXISTS idx_applications_status ON applications (status);
 CREATE INDEX IF NOT EXISTS idx_credentials_member ON credentials (member_id);
+
+-- Applicant-uploaded documents, stored in the database so they survive redeploys.
+CREATE TABLE IF NOT EXISTS application_files (
+  id             SERIAL PRIMARY KEY,
+  application_id TEXT NOT NULL REFERENCES applications(id) ON DELETE CASCADE,
+  filename       TEXT NOT NULL,
+  mime           TEXT NOT NULL DEFAULT 'application/octet-stream',
+  data           BYTEA NOT NULL,
+  created_at     TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_application_files_app ON application_files (application_id);

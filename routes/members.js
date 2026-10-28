@@ -16,13 +16,10 @@ if (!JWT_SECRET) {
   console.error('FATAL: JWT_SECRET is not set. Generate one and set it as an env var. See README.');
 }
 
-const uploadDir = path.join(__dirname, '..', 'uploads');
-fs.mkdirSync(uploadDir, { recursive: true });
+// Files are kept in Postgres (table application_files), not on disk, so they
+// survive redeploys. Memory storage hands us the bytes; limits cap size/count.
 const upload = multer({
-  storage: multer.diskStorage({
-    destination: (req, file, cb) => cb(null, uploadDir),
-    filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname.replace(/[^a-zA-Z0-9.\-_]/g, '_')}`),
-  }),
+  storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024, files: 5 },
 });
 
@@ -57,7 +54,12 @@ router.post('/apply', upload.array('files', 5), async (req, res) => {
     if (String(passcode).length < 6) {
       return res.status(400).json({ error: 'Passcode must be at least 6 characters.' });
     }
-    const files = (req.files || []).map(f => f.filename);
+    const uploaded = (req.files || []).map(f => ({
+      name: `${Date.now()}-${String(f.originalname).replace(/[^a-zA-Z0-9.\-_]/g, '_')}`,
+      mime: f.mimetype || 'application/octet-stream',
+      data: f.buffer,
+    }));
+    const files = uploaded.map(f => f.name);
 
     await client.query('BEGIN');
     const idRes = await client.query("SELECT 'GSBS-' || lpad(nextval('member_id_seq')::text, 6, '0') AS id");
@@ -85,6 +87,12 @@ router.post('/apply', upload.array('files', 5), async (req, res) => {
       [appId, memberId, name, email, type, institution || null, year || null, docs || null, JSON.stringify(files), duesMinor, dues.currency,
        waived ? 'paid' : 'unpaid', waived ? 'waived' : null, waived ? new Date() : null, waived ? null : appId]
     );
+    for (const f of uploaded) {
+      await client.query(
+        'INSERT INTO application_files (application_id, filename, mime, data) VALUES ($1,$2,$3,$4)',
+        [appId, f.name, f.mime, f.data]
+      );
+    }
     await client.query('COMMIT');
 
     let paymentUrl = null;

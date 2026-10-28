@@ -104,6 +104,27 @@ router.get('/applications', requireAdminAuth, async (req, res) => {
   }
 });
 
+// --- View an uploaded application document (admin only) -----------------------
+router.get('/applications/:id/files/:name', requireAdminAuth, async (req, res) => {
+  try {
+    const r = await pool.query(
+      'SELECT filename, mime, data FROM application_files WHERE application_id = $1 AND filename = $2 LIMIT 1',
+      [req.params.id, req.params.name]
+    );
+    if (!r.rows.length) {
+      return res.status(404).json({ error: 'This file is no longer stored (it was uploaded before files were saved to the database). Ask the applicant to send it again.' });
+    }
+    const f = r.rows[0];
+    res.setHeader('Content-Type', f.mime);
+    res.setHeader('Content-Disposition', `inline; filename="${f.filename.replace(/"/g, '')}"`);
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.send(f.data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Could not load file.' });
+  }
+});
+
 function credentialForType(type) {
   return { code: 'CCBS', label: 'Certified Clinical Biomedical Scientist (CCBS)' };
 }
